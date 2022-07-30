@@ -1,6 +1,7 @@
 NAME = container
 
-SRCS = helloworld.cpp
+SRCS = main.cpp
+
 OBJS = ${SRCS:.cpp=.o}
 
 .cpp.o:
