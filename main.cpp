@@ -286,7 +286,21 @@ int main()
         std::cout << "Capacity " << a.capacity() << std::endl;
         std::cout << "Capacity " << a.capacity() << std::endl;
         b = a.insert(a.end() ,12);
+        a.at(8) = 150;
+        a[7] = 99;
         std::cout << "Capacity " << *b << std::endl;
+        std::cout << "At 11:" << (a.at(8) + 12) << std::endl;
+        std::cout << "At 0:" << a.at(0) << std::endl;
+        std::cout << "[] 7 :" << a[7] << std::endl;
+        std::cout << "[] 1: " << a[1] << std::endl;
+        std::cout << "Front: " << a.front() << std::endl;
+        std::cout << "Back: " << a.back() << std::endl;
+        std::cout << "Data: " << *a.data() << std::endl;
+        std::cout << "hey " << *a.end() << std::endl;
+        std::cout << "-------TchouTchou eraser-----" << std::endl;
+        std::cout << "Erase "<< *a.erase(a.begin()+8 ,a.end()) << std::endl;
+        std::cout << "Size: " << a.size() << std::endl;
+        std::cout << "Empty? " << (a.empty()) << std::endl;
         std::cout << "Mon vector contient: ";
         b = a.begin();
         for (std::vector<int>::iterator c = a.end(); b != c ; b++ )
@@ -305,8 +319,22 @@ int main()
         std::cout << "Capacity " << a.capacity() << std::endl;
         std::cout << "Capacity " << a.capacity() << std::endl;
         b = a.insert(a.end() ,12);
+        a.at(8) = 150;
+        a[7] = 99;
         std::cout << "Capacity " << *b << std::endl;
-        a.insert(a.begin(), w.begin(), w.end());
+        std::cout << "At 11 :" << a.at(8) << std::endl;
+        std::cout << "At 0: " << a.at(0) << std::endl;
+        std::cout << "[] 7 :" << a[7] << std::endl;
+        std::cout << "[] 1: " << a[1] << std::endl;
+        std::cout << "Front: " << a.front() << std::endl;
+        std::cout << "Back: " << a.back() << std::endl;
+        std::cout << "Data: " << *a.data() << std::endl;
+        std::cout << "Size: " << a.size() << std::endl;
+        std::cout << "Empty? " << (a.empty()) << std::endl;
+        std::cout << "-------TchouTchou eraser-----" << std::endl;
+        std::cout << "Erase "<< *a.erase(a.begin()+ 8 ,a.end()) << std::endl;
+        std::cout << "Size: " << a.size() << std::endl;
+        std::cout << "Empty? " << (a.empty()) << std::endl;
         a.printvect();
     }
 }

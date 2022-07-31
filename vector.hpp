@@ -26,6 +26,9 @@ namespace ft {
             typedef typename std::size_t                           size_type;
             
             ///Member functions
+
+
+
             ///Constructors
             explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc), _capacity(0), _size(0), _tab(NULL)
             {
@@ -35,7 +38,72 @@ namespace ft {
                 _tab = _alloc.allocate(_capacity);
                 for (size_type x = 0; x < n; x++)
                     _alloc.construct(_tab + x, val);
+            };/*
+            template <class InputIterator>
+            vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
+            vector (const vector& x) Need insert avec Iterators (enable if)
+            {
             };
+            vector& operator=( const vector& other );
+            void assign( size_type count, const T& value );///Need clear
+            template< class InputIt >
+            void assign( InputIt first, InputIt last );
+            */
+            allocator_type get_allocator() const
+            {
+                return (_alloc);
+            };
+
+
+
+            ///Element Access
+            reference at( size_type pos )
+            {
+                if (pos > size())
+                    throw std::out_of_range("Pos is too big");
+                return(*(_tab + pos));
+            };
+            const_reference at( size_type pos ) const
+            {
+                if (pos > size())
+                    throw std::out_of_range("Pos is too big");
+                return(*(_tab + pos));
+            };
+            reference operator[]( size_type pos )
+            {
+                return(*(_tab + pos));
+            };
+            const_reference operator[]( size_type pos ) const
+            {
+                return(*(_tab + pos));
+            };
+            reference front()
+            {
+                return(*(_tab));
+            };
+            const_reference front() const
+            {
+                return(*(_tab));
+            };
+            reference back()
+            {
+                return(*(_tab + _size - 1));
+            };
+            const_reference back() const
+            {
+                return(*(_tab + _size - 1));
+            };
+            T* data()
+            {
+                return (_tab);
+            };
+            const T* data() const
+            {
+                return (_tab);
+            };
+
+
+
             ///iterator functions
             iterator begin()
             {
@@ -69,6 +137,9 @@ namespace ft {
             {
                 return const_reverse_iterator(_tab);
             };
+
+
+
             ///Capacity
             bool empty() const
             {
@@ -106,7 +177,16 @@ namespace ft {
             {
                 return (_capacity);
             };
+
+
+
             ///Modifiers
+            void clear()
+            {
+                for (size_type x = 0 ; x < _size ; x++)
+                    _alloc.destroy(_tab + x);
+                _size = 0;
+            };
             iterator insert( iterator pos, const T& value )
             {
                 size_type distd = ft::distance(begin(), pos);
@@ -129,7 +209,7 @@ namespace ft {
                 for (x = 0 ;x < count; x++)
                     _alloc.construct(_tab + distd + x, value);
                 _size = count + _size;
-            };
+            };/*
             template< class InputIt >
             void insert( iterator pos, InputIt first, InputIt last )
             {
@@ -148,6 +228,33 @@ namespace ft {
                     first++;
                 }
             }
+            iterator erase( iterator pos )
+            {
+            };*/
+            iterator erase( iterator first, iterator last )
+            {
+                size_type setback = distance(first, last);
+                if (setback == 0)
+                    return last;
+                if (last >= end())
+                {
+                    for (;first < last; first++)
+                    {
+                        _alloc.destroy(first.get_tab());
+                        _size--;
+                    }
+                    return(end());
+                }
+                else
+                {
+                    for (; first < last; first++)
+                        _alloc.destroy(first.get_tab());
+                    for (; first < end(); first++)
+                        _alloc.construct((first - setback).get_tab(), *first);
+                    _size = _size - setback;
+                    return (last - setback);
+                }
+            };
             ///Debug function
             void printvect( void )
             {
@@ -160,13 +267,13 @@ namespace ft {
             allocator_type  _alloc;
             size_type       _capacity;
             size_type       _size;
-            pointer         _tab;
+            pointer         _tab;/*
             size_type   _akinator(size_type _cap, size_type new_s)
             {
                 while (_cap < new_s)
                     _cap = _cap * 2;
                 return (_cap);
-            }
+            }*/
     };
 };
 #endif
