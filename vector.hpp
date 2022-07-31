@@ -5,11 +5,16 @@
 #include "iterator_traits.hpp"
 #include "iterator_vector.hpp"
 #include "reverse_iterator.hpp"
+#include <type_traits>
+#include <new>
+#include <iostream>
+#include <string>
 
 namespace ft {
     template < class T, class Allocator = std::allocator<T> >
     class vector
     {
+        ///-std=c++98 
         public:
             ///Member type
             typedef T                                              value_type;
@@ -38,15 +43,32 @@ namespace ft {
                 _tab = _alloc.allocate(_capacity);
                 for (size_type x = 0; x < n; x++)
                     _alloc.construct(_tab + x, val);
-            };/*
-            template <class InputIterator>
-            vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
-            vector (const vector& x) Need insert avec Iterators (enable if)
-            {
             };
-            vector& operator=( const vector& other );
-            void assign( size_type count, const T& value );///Need clear
-            template< class InputIt >
+            template <typename InputIterator, std::enable_if_t<!std::is_integral<InputIterator>::value, bool> = true >
+            vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+            {
+                (void)first;
+                (void)last;
+                (void)alloc;
+                std::cout << "YESSAI";
+            };
+            //vector (const vector& x)
+            ~vector()
+            {
+                clear();
+                _alloc.deallocate(_tab, _capacity);
+            };
+            /*
+            vector& operator=( const vector& other )/// Need enable if
+            {
+                clear();
+            };*/
+            void assign( size_type count, const T& value )
+            {
+                clear();
+                insert(begin(), count, value);
+            };
+            /*template< class InputIt >
             void assign( InputIt first, InputIt last );
             */
             allocator_type get_allocator() const
@@ -227,10 +249,16 @@ namespace ft {
                     insert(pos, *first);
                     first++;
                 }
-            }
+            }*/
             iterator erase( iterator pos )
             {
-            };*/
+                iterator posd = pos;
+                for(; posd != end();posd++)
+                    *posd= *(posd + 1);
+                _alloc.destroy(posd.get_tab());
+                _size--;
+                return (pos);
+            };
             iterator erase( iterator first, iterator last )
             {
                 size_type setback = distance(first, last);
@@ -255,6 +283,33 @@ namespace ft {
                     return (last - setback);
                 }
             };
+            void pop_back()
+            {
+                erase(end() - 1);
+            };
+            void swap( vector& other )
+            {
+                allocator_type  temp_alloc;
+                size_type       temp_capacity;
+                size_type       temp_size;
+                pointer         temp_tab;
+
+                temp_size = other._size;
+                temp_alloc = other._alloc;
+                temp_tab = other._tab;
+                temp_capacity = other._capacity;
+                other._alloc = _alloc;
+                other._capacity = _capacity;
+                other._size = _size;
+                other._tab = _tab;
+                _alloc = temp_alloc;
+                _capacity = temp_capacity;
+                _size = temp_size;
+                _tab = temp_tab;
+            };
+
+
+
             ///Debug function
             void printvect( void )
             {

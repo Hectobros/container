@@ -1,7 +1,9 @@
 #ifndef COMPLEMENTS_HPP
 #define COMPLEMENTS_HPP
+#include <iostream>
 #include "iterator_traits.hpp"
 #include "iterator_vector.hpp"
+
 
 namespace ft
 {
@@ -15,5 +17,22 @@ typename iterator_traits<random_acces_iterator>::difference_type distance (rando
     }
     return x;
 };
+
+
+template<bool B, class T = void>
+struct enable_if {};
+ 
+template<class T>
+struct enable_if<true, T>
+{
+    typedef T type;
+};
+
+template< class T >
+struct is_integral
+{
+    typedef T true;
+};
+
 }
 #endif

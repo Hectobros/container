@@ -274,6 +274,7 @@ int main()
     {
         std::cout << "----------REAL VECTOR-------------"<< std::endl;
         std::vector<int> a(10, 2);
+        std::vector<int> w(5, 5);
         std::vector<int>::iterator b;
         b = a.begin();
         std::cout << "Mon vector contient: ";
@@ -298,9 +299,16 @@ int main()
         std::cout << "Data: " << *a.data() << std::endl;
         std::cout << "hey " << *a.end() << std::endl;
         std::cout << "-------TchouTchou eraser-----" << std::endl;
-        std::cout << "Erase "<< *a.erase(a.begin()+8 ,a.end()) << std::endl;
+        std::cout << "Erase "<< *a.erase(a.end() - 9) << std::endl;
         std::cout << "Size: " << a.size() << std::endl;
         std::cout << "Empty? " << (a.empty()) << std::endl;
+        a.pop_back();
+        a.pop_back();
+        a.pop_back();
+        a.pop_back();
+        a.pop_back();
+        a.swap(w);
+        a.assign(1, 3);
         std::cout << "Mon vector contient: ";
         b = a.begin();
         for (std::vector<int>::iterator c = a.end(); b != c ; b++ )
@@ -332,9 +340,17 @@ int main()
         std::cout << "Size: " << a.size() << std::endl;
         std::cout << "Empty? " << (a.empty()) << std::endl;
         std::cout << "-------TchouTchou eraser-----" << std::endl;
-        std::cout << "Erase "<< *a.erase(a.begin()+ 8 ,a.end()) << std::endl;
+        std::cout << "Erase "<< *a.erase(a.end() - 9) << std::endl;
         std::cout << "Size: " << a.size() << std::endl;
         std::cout << "Empty? " << (a.empty()) << std::endl;
+        a.pop_back();
+        a.pop_back();
+        a.pop_back();
+        a.pop_back();
+        a.pop_back();
+        a.swap(w);
+        a.assign(1, 3);
         a.printvect();
+        ft::vector<int> d(a.begin(), a.end());
     }
 }
