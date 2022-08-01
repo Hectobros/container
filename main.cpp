@@ -297,7 +297,6 @@ int main()
         std::cout << "Front: " << a.front() << std::endl;
         std::cout << "Back: " << a.back() << std::endl;
         std::cout << "Data: " << *a.data() << std::endl;
-        std::cout << "hey " << *a.end() << std::endl;
         std::cout << "-------TchouTchou eraser-----" << std::endl;
         std::cout << "Erase "<< *a.erase(a.end() - 9) << std::endl;
         std::cout << "Size: " << a.size() << std::endl;
@@ -308,7 +307,8 @@ int main()
         a.pop_back();
         a.pop_back();
         a.swap(w);
-        a.assign(1, 3);
+        a.insert(a.begin() + 2, w.begin(), w.end());
+        a = w;
         std::cout << "Mon vector contient: ";
         b = a.begin();
         for (std::vector<int>::iterator c = a.end(); b != c ; b++ )
@@ -349,8 +349,11 @@ int main()
         a.pop_back();
         a.pop_back();
         a.swap(w);
-        a.assign(1, 3);
+        a.insert(a.begin() + 2, w.begin(), w.end());
         a.printvect();
-        ft::vector<int> d(a.begin(), a.end());
+        ft::vector<int>g(a.begin(),a.end());
+        g.printvect();
+        a = w;
+        a.printvect();
     }
 }

@@ -8,7 +8,7 @@ make: *** No rule to make target 'main.o', needed by 'container'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Jul 31 22:34:30 2022
+# Make data base, printed on Mon Aug  1 12:52:55 2022
 
 # Variables
 
@@ -41,15 +41,13 @@ CURDIR := /mnt/nfs/homes/nschmitt/Desktop/OO
 # makefile
 SHELL = /bin/sh
 # environment
-GDM_LANG = en
-# environment
 VTE_VERSION = 6003
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
 # environment
 _ = /usr/bin/code
 # environment
-JOURNAL_STREAM = 9:2552947
+JOURNAL_STREAM = 9:409985
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile (from 'Makefile', line 1)
@@ -71,15 +69,15 @@ VSCODE_VERBOSE_LOGGING = true
 # makefile (from 'Makefile', line 5)
 OBJS = ${SRCS:.cpp=.o}
 # environment
-MANAGERPID = 337558
+MANAGERPID = 105865
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/36736/vscode-ipc-36ebf1e2-9aa7-4ca8-88fb-b167808948d8.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/36736/vscode-ipc-44872bb8-43d7-4f8a-803a-7381a1d936c8.sock
 # environment
 VSCODE_CWD = /mnt/nfs/homes/nschmitt/Desktop/OO
 # environment
-XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session4
+XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session2
 # environment
-KRB5CCNAME = FILE:/tmp/krb5cc_36736_ei7dZY
+KRB5CCNAME = FILE:/tmp/krb5cc_36736_NmSjJK
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
@@ -87,7 +85,7 @@ PATH = /mnt/nfs/homes/nschmitt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr
 # environment
 GPG_AGENT_INFO = /run/user/36736/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/e1r13p13.clusters.42paris.fr:@/tmp/.ICE-unix/338096,unix/e1r13p13.clusters.42paris.fr:/tmp/.ICE-unix/338096
+SESSION_MANAGER = local/e1r11p18.clusters.42paris.fr:@/tmp/.ICE-unix/106370,unix/e1r11p18.clusters.42paris.fr:/tmp/.ICE-unix/106370
 # environment
 XDG_RUNTIME_DIR = /run/user/36736
 # environment
@@ -97,7 +95,7 @@ VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = e47bbc7563c64299a33a547f8fc5d776
+INVOCATION_ID = b0a6c987684f40eca7207ba06ac669c9
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -117,7 +115,7 @@ PWD = /mnt/nfs/homes/nschmitt/Desktop/OO
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 338058
+SSH_AGENT_PID = 106325
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -177,8 +175,6 @@ OLDPWD = /mnt/nfs/homes/nschmitt
 # automatic
 *F = $(notdir $*)
 # environment
-LANGUAGE = en
-# environment
 XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
 # environment
 VSCODE_IPC_HOOK = /run/user/36736/vscode-c4378b00-1.68.1-main.sock
@@ -207,15 +203,15 @@ LC_ALL = C
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/64800818_2117_470d_a3c1_196c9c7057c0
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/b7c06695_ae4b_4447_8be5_50ef72434491
 # automatic
 ^F = $(notdir $^)
 # environment
-GNOME_TERMINAL_SERVICE = :1.103
+GNOME_TERMINAL_SERVICE = :1.88
 # default
 SUFFIXES := 
 # makefile (from 'Makefile', line 10)
-FLAGS = -Wall -Werror -Wextra
+FLAGS = -std=c++98 -Wall -Werror -Wextra
 # environment
 CHROME_DESKTOP = code-url-handler.desktop
 # default
@@ -233,9 +229,9 @@ TERM = xterm-256color
 # environment
 DOCKER_HOST = unix:///run/user/36736/docker.sock
 # environment
-VSCODE_PID = 353278
+VSCODE_PID = 108066
 # variable set hash-table stats:
-# Load=111/1024=11%, Rehash=0, Collisions=17/140=12%
+# Load=109/1024=11%, Rehash=0, Collisions=17/138=12%
 
 # Pattern-specific Variable Values
 
@@ -243,7 +239,7 @@ VSCODE_PID = 353278
 
 # Directories
 
-# . (device 59, inode 230528108): 13 files, no impossibilities.
+# . (device 55, inode 230528108): 13 files, no impossibilities.
 
 # 13 files, no impossibilities in 1 directories.
 
@@ -268,7 +264,7 @@ all: container
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-31 22:34:29.283406102
+#  Last modified 2022-08-01 12:50:53.890833807
 #  File has been updated.
 #  Successfully updated.
 
@@ -282,12 +278,12 @@ container: main.o
 fclean: clean
 #  Phony target (prerequisite of .PHONY).
 #  Implicit rule search has not been done.
- 
 #  File does not exist.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 21):
 	rm -rf $(NAME)
 
+ 
 # Not a target:
 .DEFAULT:
 #  Implicit rule search has not been done.
@@ -334,6 +330,6 @@ main.o:
 # strcache performance: lookups = 44 / hit rate = 43%
 # hash-table stats:
 # Load=25/8192=0%, Rehash=0, Collisions=1/44=2%
-# Finished Make data base on Sun Jul 31 22:34:30 2022
+# Finished Make data base on Mon Aug  1 12:52:55 2022
 
  

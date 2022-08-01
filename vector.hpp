@@ -5,16 +5,11 @@
 #include "iterator_traits.hpp"
 #include "iterator_vector.hpp"
 #include "reverse_iterator.hpp"
-#include <type_traits>
-#include <new>
-#include <iostream>
-#include <string>
 
 namespace ft {
     template < class T, class Allocator = std::allocator<T> >
     class vector
     {
-        ///-std=c++98 
         public:
             ///Member type
             typedef T                                              value_type;
@@ -38,39 +33,42 @@ namespace ft {
             explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc), _capacity(0), _size(0), _tab(NULL)
             {
             };
-            explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _capacity(n) , _size(n)
+            explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _capacity(n) , _size(n) , _tab(NULL)
             {
                 _tab = _alloc.allocate(_capacity);
                 for (size_type x = 0; x < n; x++)
                     _alloc.construct(_tab + x, val);
             };
-            template <typename InputIterator, std::enable_if_t<!std::is_integral<InputIterator>::value, bool> = true >
-            vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+
+            template <typename InputIterator>
+            vector (typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type()) : _alloc(alloc) , _capacity(0), _size(0), _tab(NULL)
             {
-                (void)first;
-                (void)last;
-                (void)alloc;
-                std::cout << "YESSAI";
+                insert(begin(), first, last);
             };
+            
             //vector (const vector& x)
             ~vector()
             {
                 clear();
                 _alloc.deallocate(_tab, _capacity);
             };
-            /*
-            vector& operator=( const vector& other )/// Need enable if
+            vector& operator=( const vector& other )
             {
-                clear();
-            };*/
+                assign(other.begin(),other.end());
+                return *this;
+            };
             void assign( size_type count, const T& value )
             {
                 clear();
                 insert(begin(), count, value);
             };
-            /*template< class InputIt >
-            void assign( InputIt first, InputIt last );
-            */
+            template< class InputIt >
+            void assign( InputIt first, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type last)
+            {
+                clear();
+                insert(begin(), first, last);
+            };
+            
             allocator_type get_allocator() const
             {
                 return (_alloc);
@@ -81,13 +79,13 @@ namespace ft {
             ///Element Access
             reference at( size_type pos )
             {
-                if (pos > size())
+                if (pos >= size())
                     throw std::out_of_range("Pos is too big");
                 return(*(_tab + pos));
             };
             const_reference at( size_type pos ) const
             {
-                if (pos > size())
+                if (pos >= size())
                     throw std::out_of_range("Pos is too big");
                 return(*(_tab + pos));
             };
@@ -190,7 +188,8 @@ namespace ft {
                         _alloc.construct(new_tab + x, *(_tab + x));
                         _alloc.destroy(_tab + x);
                     }
-                    _alloc.deallocate(_tab, _capacity);
+                    if (_tab != NULL)
+                        _alloc.deallocate(_tab, _capacity);
                     _tab = new_tab;
                     _capacity = new_cap;
                 }
@@ -231,15 +230,13 @@ namespace ft {
                 for (x = 0 ;x < count; x++)
                     _alloc.construct(_tab + distd + x, value);
                 _size = count + _size;
-            };/*
-            template< class InputIt >
-            void insert( iterator pos, InputIt first, InputIt last )
+            };
+
+            template< class InputIt>
+            void insert( iterator pos, InputIt first, typename ft::enable_if<!ft::is_integral<InputIt>::value , InputIt>::type last)
             {
                 if (first == last)
-                {
-                    insert(pos, *first);
                     return;
-                }
                 size_type distd = ft::distance(begin(), pos);
                 size_type distp = ft::distance(first, last);
                 reserve(_size + distp);
@@ -249,7 +246,8 @@ namespace ft {
                     insert(pos, *first);
                     first++;
                 }
-            }*/
+            };
+
             iterator erase( iterator pos )
             {
                 iterator posd = pos;
@@ -330,5 +328,29 @@ namespace ft {
                 return (_cap);
             }*/
     };
-};
+/*
+    template <class T, class Alloc>
+    void swap (vector<T,Alloc>& x, vector<T,Alloc>& y);
+    
+    template< class T, class Alloc >
+    bool operator==( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+                    
+    template< class T, class Alloc >
+    constexpr bool operator==( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+
+    template< class T, class Alloc >
+    bool operator!=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+
+    template< class T, class Alloc >
+    bool operator<( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+
+    template< class T, class Alloc >
+    bool operator<=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+
+    template< class T, class Alloc >
+    bool operator>( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+
+    template< class T, class Alloc >
+    bool operator>=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );*/
+}
 #endif

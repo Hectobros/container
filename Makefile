@@ -7,7 +7,7 @@ OBJS = ${SRCS:.cpp=.o}
 .cpp.o:
 	c++ ${FLAGS} -c $< -o ${<:.cpp=.o}
 
-FLAGS = -Wall -Werror -Wextra
+FLAGS = -std=c++98 -Wall -Werror -Wextra
 
 all: $(NAME)
 
