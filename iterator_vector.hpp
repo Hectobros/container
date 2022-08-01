@@ -86,9 +86,9 @@ class random_acces_iterator
         {
             difference_type x = 0;
             if (_tab > rhs._tab)
-                x = distance(rhs, *this);
+                x = ft::distance(rhs, *this);
             else
-                x = distance(*this, rhs) * -1;
+                x = ft::distance(*this, rhs) * -1;
             return x;
         }
         ///compound assignement operators

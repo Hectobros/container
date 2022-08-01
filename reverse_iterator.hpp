@@ -78,9 +78,9 @@ class reverse_iterator
         {
             difference_type x = 0;
             if (current > rhs.current)
-                x = distance(rhs, *this);
+                x = ft::distance(rhs, *this);
             else
-                x = distance(*this, rhs) * -1;
+                x = ft::distance(*this, rhs) * -1;
             return x;
         }
         reverse_iterator& operator--()

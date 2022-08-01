@@ -308,12 +308,18 @@ int main()
         a.pop_back();
         a.swap(w);
         a.insert(a.begin() + 2, w.begin(), w.end());
-        a = w;
         std::cout << "Mon vector contient: ";
         b = a.begin();
         for (std::vector<int>::iterator c = a.end(); b != c ; b++ )
             std::cout << *b << " " ;
         std::cout << std::endl;
+        std::vector<int> p(6,6);
+        std::vector<int> j(6,6);
+        std::cout << "True :" << true << " False: " << false << std::endl;
+        std::cout << "SAME?? " << (p == j) << std::endl;
+        std::cout << "NOT SAME?? " << (p != j) << std::endl;
+        std::cout << "INEFRIOR " << (p < j) << std::endl;
+        std::cout << "INEFRIOR EGAL" << (p <= j) << std::endl;
     }
     {
         std::cout << "----------FT VECTOR-------------"<< std::endl;
@@ -355,5 +361,12 @@ int main()
         g.printvect();
         a = w;
         a.printvect();
+        ft::vector<int> p(6,6);
+        ft::vector<int> j(6,6);
+        std::cout << "True :" << true << " False: " << false << std::endl;
+        std::cout << "SAME?? " << (p == j) << std::endl;
+        std::cout << "NOT SAME?? " << (p != j) << std::endl;
+        std::cout << "INEFRIOR " << (p < j) << std::endl;
+        std::cout << "INEFRIOR EGAL" << (p <= j) << std::endl;
     }
 }

@@ -5,11 +5,14 @@
 #include "iterator_traits.hpp"
 #include "iterator_vector.hpp"
 #include "reverse_iterator.hpp"
+/// HEADERS TESTER
+#include <limits>
+#include <algorithm>
 
 namespace ft {
     template < class T, class Allocator = std::allocator<T> >
     class vector
-    {
+    {///-std=c++98 
         public:
             ///Member type
             typedef T                                              value_type;
@@ -50,7 +53,8 @@ namespace ft {
             ~vector()
             {
                 clear();
-                _alloc.deallocate(_tab, _capacity);
+                if(_tab != NULL)
+                    _alloc.deallocate(_tab, _capacity);
             };
             vector& operator=( const vector& other )
             {
@@ -220,7 +224,7 @@ namespace ft {
                 size_type distf = ft::distance(pos, end());
                 size_type distd = ft::distance(begin(), pos);
                 if  (count + _size > _capacity)
-                    reserve(count + _size + 10);
+                    reserve(_akinator(_size ,count + _size ));
                 for (reverse_iterator c = rbegin();  x < distf; x++)
                 {
                     _alloc.construct(_tab + ft::distance(begin(), c.base()) + count, *c);
@@ -238,12 +242,9 @@ namespace ft {
                 if (first == last)
                     return;
                 size_type distd = ft::distance(begin(), pos);
-                size_type distp = ft::distance(first, last);
-                reserve(_size + distp);
-                pos = begin() + distd;
-                for(size_type x = 0; x < distp ; x++)
+                for(size_type x = 0; first != last ; x++)
                 {
-                    insert(pos, *first);
+                    insert(begin() + distd + x, *first);
                     first++;
                 }
             };
@@ -259,7 +260,7 @@ namespace ft {
             };
             iterator erase( iterator first, iterator last )
             {
-                size_type setback = distance(first, last);
+                size_type setback = ft::distance(first, last);
                 if (setback == 0)
                     return last;
                 if (last >= end())
@@ -281,9 +282,27 @@ namespace ft {
                     return (last - setback);
                 }
             };
+
             void pop_back()
             {
                 erase(end() - 1);
+            };
+
+            void push_back( const T& value )
+            {
+                insert(end(), value);
+            };
+
+            void resize( size_type count, T value = T())
+            {
+                if (count < _size)
+                {
+                    erase(begin() + count, end());
+                }
+                else if (count > _size)
+                {
+                    insert(end(), count - _size, value);
+                }
             };
             void swap( vector& other )
             {
@@ -320,37 +339,69 @@ namespace ft {
             allocator_type  _alloc;
             size_type       _capacity;
             size_type       _size;
-            pointer         _tab;/*
+            pointer         _tab;
             size_type   _akinator(size_type _cap, size_type new_s)
             {
+                if (_cap == 0)
+                    _cap  = 1;
                 while (_cap < new_s)
                     _cap = _cap * 2;
                 return (_cap);
-            }*/
+            }
     };
-/*
+
     template <class T, class Alloc>
-    void swap (vector<T,Alloc>& x, vector<T,Alloc>& y);
-    
-    template< class T, class Alloc >
-    bool operator==( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
-                    
-    template< class T, class Alloc >
-    constexpr bool operator==( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+    void swap (ft::vector<T,Alloc>& x, ft::vector<T,Alloc>& y)
+    {
+        x.swap(y);
+    };
 
     template< class T, class Alloc >
-    bool operator!=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+    bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+    {
+        typename ft::vector<T,Alloc>::const_iterator first1 = lhs.begin();
+        typename ft::vector<T,Alloc>::const_iterator last1 = lhs.end();
+        typename ft::vector<T,Alloc>::const_iterator first2 = rhs.begin();
+        typename ft::vector<T,Alloc>::const_iterator last2 = rhs.end();
+
+        while(first1 != last1)
+        {
+            if(first2 == last2 || *first1 != *first2)
+                return false;
+            first1++;
+            first2++;
+        }
+        return (last2 == first2);
+    };
 
     template< class T, class Alloc >
-    bool operator<( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+    bool operator!=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+    {
+        return(!(lhs == rhs));
+    };
 
     template< class T, class Alloc >
-    bool operator<=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+    bool operator<( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+    {
+        return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+    };
 
     template< class T, class Alloc >
-    bool operator>( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );
+    bool operator<=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+    {
+        return (((lhs < rhs) || (lhs == rhs)));
+    };
 
     template< class T, class Alloc >
-    bool operator>=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs );*/
+    bool operator>( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+    {
+        return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+    };
+
+    template< class T, class Alloc >
+    bool operator>=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
+    {
+        return (((lhs > rhs) || (lhs == rhs)));
+    }; 
 }
 #endif
