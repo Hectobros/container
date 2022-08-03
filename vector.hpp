@@ -38,6 +38,8 @@ namespace ft {
             };
             explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _capacity(n) , _size(n) , _tab(NULL)
             {
+                if(_capacity > max_size())
+                    throw std::length_error ("Too big to allocate");
                 _tab = _alloc.allocate(_capacity);
                 for (size_type x = 0; x < n; x++)
                     _alloc.construct(_tab + x, val);
@@ -49,7 +51,10 @@ namespace ft {
                 insert(begin(), first, last);
             };
             
-            //vector (const vector& x)
+            vector (const vector& x)
+            {
+                assign(x.begin(),x.end());
+            }
             ~vector()
             {
                 clear();
@@ -89,7 +94,7 @@ namespace ft {
             };
             const_reference at( size_type pos ) const
             {
-                if (pos >= size())
+                if (pos >= _size)
                     throw std::out_of_range("Pos is too big");
                 return(*(_tab + pos));
             };
@@ -220,6 +225,8 @@ namespace ft {
             };
             void insert( iterator pos, size_type count, const T& value )
             {
+                if (count == 0)
+                    return;
                 size_type x = 0;
                 size_type distf = ft::distance(pos, end());
                 size_type distd = ft::distance(begin(), pos);
@@ -252,34 +259,48 @@ namespace ft {
             iterator erase( iterator pos )
             {
                 iterator posd = pos;
-                for(; posd != end();posd++)
+                for(; posd + 1 != end();posd++)
+                {
                     *posd= *(posd + 1);
-                _alloc.destroy(posd.get_tab());
-                _size--;
+                }
+                if (posd != end())
+                {
+                    _alloc.destroy(posd.get_tab());
+                    _size--;
+                }
                 return (pos);
             };
             iterator erase( iterator first, iterator last )
             {
-                size_type setback = ft::distance(first, last);
-                if (setback == 0)
+                size_type distancedeb = ft::distance(begin(), first);
+                size_type setback = 0;
+                if (first == last)
                     return last;
                 if (last >= end())
                 {
-                    for (;first < last; first++)
+                    for (size_type x = 0;first < last; first++)
                     {
-                        _alloc.destroy(first.get_tab());
+                        _alloc.destroy(_tab + distancedeb + x);
                         _size--;
+                        x++;
                     }
                     return(end());
                 }
                 else
                 {
                     for (; first < last; first++)
-                        _alloc.destroy(first.get_tab());
-                    for (; first < end(); first++)
-                        _alloc.construct((first - setback).get_tab(), *first);
+                        setback++;
+                    for (size_type y = 0; y < setback; y++)
+                        _alloc.destroy(_tab + distancedeb + y);
+                    for (size_type start = distancedeb ; start < _size; start++)
+                    {
+                        if (start >= distancedeb + setback)
+                            _alloc.destroy(_tab + start);
+                        if (start + setback < _size)
+                            _alloc.construct(_tab + start, *(_tab + start + setback));
+                    }
                     _size = _size - setback;
-                    return (last - setback);
+                    return (begin() + distancedeb);
                 }
             };
 
@@ -383,7 +404,7 @@ namespace ft {
     template< class T, class Alloc >
     bool operator<( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
     {
-        return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+        return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
     };
 
     template< class T, class Alloc >
@@ -395,7 +416,7 @@ namespace ft {
     template< class T, class Alloc >
     bool operator>( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
     {
-        return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+        return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
     };
 
     template< class T, class Alloc >
