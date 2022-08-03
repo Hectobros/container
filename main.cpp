@@ -6,8 +6,31 @@
 #include <vector>
 #include <list>
 
+void	prepost_incdec(ft::vector<int> &vct)
+{
+	ft::vector<int>::iterator it = vct.begin();
+	ft::vector<int>::iterator it_tmp;
+
+	std::cout << "Pre inc" << std::endl;
+	it_tmp = ++it;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+
+	std::cout << "Pre dec" << std::endl;
+	it_tmp = --it;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+
+	std::cout << "Post inc" << std::endl;
+	it_tmp = it++;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+
+	std::cout << "Post dec" << std::endl;
+	it_tmp = it--;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+	std::cout << "###############################################" << std::endl;
+}
+
 int main()
-{   /*std::cout << "ITERATORS TESTERS" << std::endl;
+{   std::cout << "ITERATORS TESTERS" << std::endl;
     {
         std::cout << "ft::vector: " << std::endl;
         ft::vector<int> a(15, 2);
@@ -15,6 +38,7 @@ int main()
         ft::vector<int>::iterator g;
         ft::vector<int>::iterator d;
         g = a.begin();
+        g[2] = 5;
         d = a.end();
         std::cout << "Test Iterators Operators" << std::endl;
         std::cout << "True = " << true << " False = " << false << std::endl;
@@ -269,7 +293,7 @@ int main()
         std::cout << "g >= d " << (g>= d) << std::endl;
         
         //std::cout << "begin - end" << (a.begin() - a.end()) << std::endl;
-    }*/
+    }
     std::cout << "Capacity tester"<< std::endl;
     {
         std::cout << "----------REAL VECTOR-------------"<< std::endl;
@@ -369,4 +393,59 @@ int main()
         std::cout << "INEFRIOR " << (p < j) << std::endl;
         std::cout << "INEFRIOR EGAL" << (p <= j) << std::endl;
     }
+{
+	const int size = 5;
+    int t = 5;
+	ft::vector<int> vct(size);
+	ft::vector<int>::iterator it = vct.begin();
+	ft::vector<int>::const_iterator ite = vct.begin();
+
+	for (int i = 0; i < size; ++i)
+		it[i] = ((size - i) * t);
+	prepost_incdec(vct);
+
+	it = it + 5;
+	it = 1 + it;
+	it = it - 4;
+	std::cout << *(it += 2) << std::endl;
+	std::cout << *(it -= 1) << std::endl;
+
+	*(it -= 2) = 42;
+	*(it += 2) = 21;
+
+	std::cout << "const_ite +=: " << *(ite += 2) << std::endl;
+	std::cout << "const_ite -=: " << *(ite -= 2) << std::endl;
+
+	std::cout << "(it == const_it): " << (ite == it) << std::endl;
+	std::cout << "(const_ite - it): " << (ite - it) << std::endl;
+	std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
+
+	return (0);
+};
+{
+	const int size = 5;
+	ft::vector<int> vct(size);
+	ft::vector<int>::reverse_iterator it = vct.rbegin();
+	ft::vector<int>::const_reverse_iterator ite = vct.rbegin();
+
+	for (int i = 0; i < size; ++i)
+		it[i] = (size - i) * 5;
+
+	it = it + 5;
+	it = 1 + it;
+	it = it - 4;
+	std::cout << *(it += 2) << std::endl;
+	std::cout << *(it -= 1) << std::endl;
+
+	*(it -= 2) = 42;
+	*(it += 2) = 21;
+
+	std::cout << "const_ite +=/-=: " << *(ite += 2) << " | " << *(ite -= 2) << std::endl;
+
+	std::cout << "(it == const_it): " << (ite == it) << std::endl;
+	std::cout << "(const_ite - it): " << (ite - it) << std::endl;
+	std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
+
+	return (0);
+};
 }

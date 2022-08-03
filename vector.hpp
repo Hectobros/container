@@ -90,13 +90,13 @@ namespace ft {
             {
                 if (pos >= size())
                     throw std::out_of_range("Pos is too big");
-                return(*(_tab + pos));
+                return(_tab[pos]);
             };
             const_reference at( size_type pos ) const
             {
                 if (pos >= _size)
                     throw std::out_of_range("Pos is too big");
-                return(*(_tab + pos));
+                return(_tab[pos]);
             };
             reference operator[]( size_type pos )
             {

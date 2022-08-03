@@ -18,14 +18,20 @@ class reverse_iterator
         //constructors
         reverse_iterator(iterator_type iter) : current(iter){};
         reverse_iterator(): current(NULL){};
-        reverse_iterator( const reverse_iterator<T>& other ) : current(other.current){};
+
+        template< class U >
+        reverse_iterator( const reverse_iterator<U>& other ) : current(other.base()++){};
+
         operator reverse_iterator<random_acces_iterator<const value_type> > () const
         {
             return(reverse_iterator<random_acces_iterator<const value_type> >(current));
         }
-        reverse_iterator& operator=(const reverse_iterator<T>& rhs)
+
+        template< class U >
+        reverse_iterator& operator=( const reverse_iterator<U>& other )
         {
-            current = rhs.current;
+            current = other.base();
+            current++;
             return *this;
         };
         ///Base
@@ -41,9 +47,9 @@ class reverse_iterator
         pointer operator->() const {
             return &(operator*());
         }
-        value_type operator[](int x)
+        reference operator[](int x) const
         {
-            return (*(current + x - 1));
+            return (*(current - x- 1));
         };
         ///Members function
         reverse_iterator operator+(difference_type n) const
@@ -65,7 +71,7 @@ class reverse_iterator
         };
         reverse_iterator& operator+=(const int n)
         {
-            current = current - n;
+            current -= n;
             return *this;
         };
         reverse_iterator operator-(int n)
@@ -98,7 +104,7 @@ class reverse_iterator
         
         reverse_iterator& operator-=(const int n)
         {
-            current = current + n;
+            current += n;
             return *this;
         };
         protected:
@@ -106,7 +112,7 @@ class reverse_iterator
 };
 
 /// Non member Reverse iterators functions
-
+/*
 template< class Iterator >
 typename reverse_iterator<Iterator>::difference_type operator-( const reverse_iterator<Iterator>& lhs,const reverse_iterator<Iterator>& rhs )
 {
@@ -119,7 +125,7 @@ reverse_iterator<Iterator> operator+ ( typename reverse_iterator<Iterator>::diff
 {
     std::cout << "YOOOOOOOOOOO" << std::endl;
     return(reverse_iterator<Iterator>(rev_it.base() - n +5000));
-};
+};*/
 
 template< class Iterator1, class Iterator2 >
 bool operator==( const ft::reverse_iterator<Iterator1>& lhs, const ft::reverse_iterator<Iterator2>& rhs )

@@ -16,12 +16,13 @@ class random_acces_iterator
         typedef typename ft::iterator_traits<T*>::difference_type   difference_type;
         typedef typename ft::iterator_traits<T*>::pointer           pointer;
         typedef typename ft::iterator_traits<T*>::reference         reference;
-        typedef typename ft::random_access_iterator_tag iterator_category;
+        typedef typename std::random_access_iterator_tag iterator_category;
 
         //constructors
         random_acces_iterator(const pointer _ptr) : _tab(_ptr){};
         random_acces_iterator(): _tab(NULL){};
         random_acces_iterator(const random_acces_iterator& rhs) : _tab(rhs._tab){};
+        ~random_acces_iterator(){};
         operator random_acces_iterator<const T>() const
         {
             return(random_acces_iterator<const T>(_tab));
@@ -40,9 +41,9 @@ class random_acces_iterator
         {
             return _tab; 
         };
-        value_type operator[](int x)
+        reference operator[](int x)
         {
-            return (*(_tab + x));
+            return _tab[x];
         };
         ///Operators
         //Incrementors
@@ -106,6 +107,26 @@ class random_acces_iterator
         {
             return (_tab);
         }
+/*
+        ///comparator
+        bool		operator==(const random_acces_iterator & rhs) const {
+		    return _tab == rhs._tab;
+        }
+        bool		operator!=(const random_acces_iterator & rhs) const {
+            return _tab != rhs._tab;
+        }
+        bool		operator<(const random_acces_iterator & rhs) const {
+            return _tab < rhs._tab;
+        }
+        bool		operator>(const random_acces_iterator & rhs) const {
+            return _tab > rhs._tab;
+        }
+        bool		operator<=(const random_acces_iterator & rhs) const {
+            return _tab <= rhs._tab;
+        }
+        bool		operator>=(const random_acces_iterator & rhs) const {
+            return _tab >= rhs._tab;
+        }*/
         private:
             pointer _tab;
 };
