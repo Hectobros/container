@@ -2,9 +2,9 @@
 #define VECTOR_HPP
 
 #include <iostream>
-#include "iterator_traits.hpp"
-#include "iterator_vector.hpp"
-#include "reverse_iterator.hpp"
+#include "./utils/iterator_traits.hpp"
+#include "./vector_utils/iterator_vector.hpp"
+#include "./utils/reverse_iterator.hpp"
 /// HEADERS TESTER
 #include <limits>
 #include <algorithm>
@@ -12,7 +12,7 @@
 namespace ft {
     template < class T, class Allocator = std::allocator<T> >
     class vector
-    {///-std=c++98 
+    {
         public:
             ///Member type
             typedef T                                              value_type;
@@ -51,10 +51,11 @@ namespace ft {
                 insert(begin(), first, last);
             };
             
-            vector (const vector& x)
+            vector (const vector& x) : _alloc(x._alloc), _capacity(0),_size(0), _tab(NULL)
             {
                 assign(x.begin(),x.end());
             }
+
             ~vector()
             {
                 clear();
@@ -63,6 +64,7 @@ namespace ft {
             };
             vector& operator=( const vector& other )
             {
+                _alloc = other.get_allocator();
                 assign(other.begin(),other.end());
                 return *this;
             };
@@ -86,6 +88,7 @@ namespace ft {
 
 
             ///Element Access
+            
             reference at( size_type pos )
             {
                 if (pos >= size())
@@ -94,7 +97,7 @@ namespace ft {
             };
             const_reference at( size_type pos ) const
             {
-                if (pos >= _size)
+                if (pos >= size())
                     throw std::out_of_range("Pos is too big");
                 return(_tab[pos]);
             };
@@ -234,8 +237,8 @@ namespace ft {
                     reserve(_akinator(_size ,count + _size ));
                 for (reverse_iterator c = rbegin();  x < distf; x++)
                 {
-                    _alloc.construct(_tab + ft::distance(begin(), c.base()) + count, *c);
-                    _alloc.destroy(c.base().get_tab());
+                    _alloc.construct(_tab + ft::distance(begin(), c.base() - 1) + count, *c);
+                    _alloc.destroy((c.base() - 1).get_tab());
                     c++;
                 }
                 for (x = 0 ;x < count; x++)
