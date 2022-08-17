@@ -19,8 +19,8 @@ typename iterator_traits<random_acces_iterator>::difference_type distance (rando
 };
 
 template <class InputIterator1, class InputIterator2>
-    bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
-    {
+bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
+{
     while (first1!=last1)
     {
         if (first2==last2 || *first2<*first1)
@@ -94,5 +94,87 @@ struct is_integral<unsigned long int> : public true_type { };
 
 template<>
 struct is_integral<unsigned long long int> : public true_type { };
+
+template <class T1, class T2>
+struct pair
+{
+    typedef T1  first_type;
+    typedef T2  second_type;
+
+    first_type  first;
+    second_type second;
+    pair() : first(first_type()), second(second_type()) {};
+
+    template<class U, class V>
+    pair(const pair<U,V>& pr) : first(pr.first), second(pr.second) {};
+
+    pair (const first_type& a, const second_type& b) : first(a), second(b){};
+    pair& operator= (const pair& pr)
+    {
+        first = pr.first;
+        second = pr.second;
+        return *this;
+    };
+    ~pair(){};
+};
+
+template< class T1, class T2 >
+ft::pair<T1,T2> make_pair( T1 t, T2 u )
+{
+    return ft::pair<T1, T2>(t, u);
+};
+
+template< class T1, class T2 >
+bool operator==( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+{
+    return(lhs.first == rhs.first && lhs.second == rhs.second);
+};
+
+template< class T1, class T2 >
+bool operator!=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+{
+    return(!(lhs == rhs));
+};
+
+template< class T1, class T2 >
+bool operator<( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+{
+    if (lhs.first > rhs.first)
+        return (false);
+    if ((lhs.second > rhs.second) || lhs == rhs)
+        return (false);
+    return true;
+};
+
+template< class T1, class T2 >
+bool operator<=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+{
+    if (lhs.first > rhs.first)
+        return (false);
+    if ((lhs.second > rhs.second))
+        return (false);
+    return true;
+};
+
+template< class T1, class T2 >
+bool operator>( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+{
+    if (lhs.first < rhs.first)
+        return (false);
+    if ((lhs.second < rhs.second) || lhs == rhs)
+        return (false);
+    return true;
+};
+
+template< class T1, class T2 >
+bool operator>=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+{
+    if (lhs.first < rhs.first)
+        return (false);
+    if ((lhs.second < rhs.second))
+        return (false);
+    return true;
+};
+
 }
 #endif
