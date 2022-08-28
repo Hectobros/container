@@ -2,7 +2,7 @@
 #define COMPLEMENTS_HPP
 #include <iostream>
 #include "iterator_traits.hpp"
-#include "../vector_utils/iterator_vector.hpp"
+//#include "../vector_utils/iterator_vector.hpp"
 
 
 namespace ft
@@ -174,6 +174,17 @@ bool operator>=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
     if ((lhs.second < rhs.second))
         return (false);
     return true;
+};
+
+template <class Arg1, class Arg2, class Result>
+  struct binary_function {
+    typedef Arg1 first_argument_type;
+    typedef Arg2 second_argument_type;
+    typedef Result result_type;
+};
+
+template <class T> struct less : binary_function <T,T,bool> {
+  bool operator() (const T& x, const T& y) const {return x<y;}
 };
 
 }

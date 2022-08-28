@@ -370,6 +370,8 @@ namespace ft {
                     _cap  = 1;
                 while (_cap < new_s)
                     _cap = _cap * 2;
+                if (_cap >= max_size() && new_s <= max_size())
+                    _cap = max_size();
                 return (_cap);
             }
     };
