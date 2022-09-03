@@ -20,7 +20,6 @@ class map{
         typedef T                                           mapped_type;
         typedef ft::pair<key_type, mapped_type>             value_type;
         typedef Compare                                     key_compare;
-        //typedef XXXX                                      value_compare;
         typedef Alloc                                       allocator_type;
         typedef typename allocator_type::reference          reference;
         typedef typename allocator_type::const_reference    const_reference;
@@ -54,18 +53,21 @@ class map{
             std::cout << "HEY DON T USE THAT" << std::endl;
         }
         map(const value_type &v) : _alloc(allocator_type()), _alloc_node(allocator_node()) , _comp(key_compare()){
-            _root = _alloc_node.allocate(1);
-            _root->data = v;
-            _root->height = 0;
-            _root->left = NULL;
-            _root->right = NULL;
-            _root->parent = NULL;
+            _root = _new_node(NULL, v);
         }
 
+        ~map()
+        {
+            _delete_tree();
+        }
         void    insert(const value_type &value)
         {
-            insert(value, _root);
+            if (_root)
+                insert(value, _root);
+            else
+                _root = _new_node(NULL, value);
         }
+
         void    insert(const value_type &value, nodePTR t)
         {
             if (_comp(value.first, t->data.first))
@@ -73,12 +75,8 @@ class map{
                 if (t->left == NULL)
                 {
                     
-                    t->left = _alloc_node.allocate(1);
-                    t->left->parent = t;
-                    t->left->data = value;
-                    t->left->height = 1;
-                    t->left->right = NULL;
-                    t->left->left = NULL;
+                    t->left = _new_node(t, value);
+                    _adjust(t->left);
                 }
                 else
                     insert(value, t->left);
@@ -87,17 +85,15 @@ class map{
             {
                 if (t->right == NULL)
                 {
-                    t->right = _alloc_node.allocate(1);
-                    t->right->parent = t;
-                    t->right->data = value;
-                    t->right->height = 1;
-                    t->right->left = NULL;
-                    t->right->right = NULL;
+                    t->right = _new_node(t, value);
+                    _adjust(t->right);
                 }
                 else
                     insert(value, t->right);
             }
         };
+
+        //debug
         void    print_less()
         {
             print_less(_root);
@@ -116,10 +112,126 @@ class map{
         void    print_max(const nodePTR t)
         {
             if (t->right == NULL)
-                std::cout << t->data.second << std::endl << "DAD : " << t->parent->data.second <<std::endl;
+                std::cout << t->data.second << std::endl;
             else
                 print_max(t->right);
         }
+        //getmin
+        nodePTR _get_min(nodePTR p)
+        {
+            if (!p->left && !p->right)
+                return p;
+            else if (!p->left && p->right)
+                return(_get_min(p->right));
+            else
+                return(_get_min(p->left));
+        }
+        nodePTR _get_max(nodePTR p)
+        {
+            if (!p->left && !p->right)
+                return p;
+            else if (p->left && !p->right)
+                return(_get_max(p->left));
+            else
+                return(_get_max(p->right));
+        }
+        void    _delete_tree()
+        {
+            nodePTR temp = NULL;
+            while(_root)
+            {
+                if (_root->left)
+                {
+                    temp = _get_min(_root);
+                    (temp->parent->left == temp) ? temp->parent->left = NULL : temp->parent->right = NULL;
+                }
+                else if (_root->right)
+                {
+                    temp = _get_max(_root);
+                    (temp->parent->left == temp) ? temp->parent->left = NULL : temp->parent->right = NULL;
+                }
+                else
+                {
+                    temp = _root;
+                    _root = NULL;
+                }
+                _alloc_node.destroy(temp);
+                _alloc_node.deallocate(temp, 1);
+            }
+        }
+        void    _adjust(nodePTR t)
+        {
+            if (t->parent)
+            {
+                if(t->parent->left && t->parent->left == t)
+                    t->parent->height --;
+                else if(t->parent->right && t->parent->right == t)
+                    t->parent->height ++;
+                _adjust(t->parent);
+            }
+        }
+
+        nodePTR    _new_node(nodePTR dad, value_type v)
+        {
+            nodePTR n_node;
+            n_node = _alloc_node.allocate(1);
+            n_node->parent = dad;
+            n_node->data = v;
+            n_node->height = 0;
+            n_node->right = NULL;
+            n_node->left = NULL;
+            return (n_node);
+        };
+
+        void    _left_rotate(nodePTR x)
+        {
+            nodePTR x;
+            nodePTR y = x->right;
+            if (y->left)
+                x->right = y->left;
+            if (!x->parent)
+                _root = y;
+            else if (x->parent->right == x)
+                x->parent->right = y;
+            else
+                x->parent->left = y;
+            y->parent = x->parent;
+            x->parent = y;
+            y->left = x;
+        };
+
+        void    _right_rotate(nodePTR x)
+        {
+            nodePTR x;
+            nodePTR y = x->left;
+            if (y->right)
+                x->left = y->right;
+            if (!x->parent)
+                _root = y;
+            else if (x->parent->right == x)
+                x->parent->right = y;
+            else
+                x->parent->left = y;
+            y->parent = x->parent;
+            x->parent = y;
+            y->right = x;
+        };
+
+        void _left_right(nodePTR x)
+        {
+            nodePTR dad;
+            dad = x->parent;
+            _left_rotate(x);
+            _right_rotate(dad);
+        }
+        void _right_left(nodePTR x)
+        {
+            nodePTR dad;
+            dad = x->parent;
+            _right_rotate(x);
+            _left_rotate(dad);
+        }
+        
     private:
         allocator_type      _alloc;
         allocator_node      _alloc_node;
