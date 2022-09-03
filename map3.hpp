@@ -77,6 +77,7 @@ class map{
                     
                     t->left = _new_node(t, value);
                     _adjust(t->left);
+                    _rebalance(t->left);
                 }
                 else
                     insert(value, t->left);
@@ -87,6 +88,7 @@ class map{
                 {
                     t->right = _new_node(t, value);
                     _adjust(t->right);
+                    _rebalance(t->right);
                 }
                 else
                     insert(value, t->right);
@@ -111,10 +113,13 @@ class map{
         }
         void    print_max(const nodePTR t)
         {
-            if (t->right == NULL)
+            if (!t->right)
                 std::cout << t->data.second << std::endl;
             else
+            {
+                std::cout << t->data.first << std::endl;
                 print_max(t->right);
+            }
         }
         //getmin
         nodePTR _get_min(nodePTR p)
@@ -159,15 +164,17 @@ class map{
                 _alloc_node.deallocate(temp, 1);
             }
         }
+
         void    _adjust(nodePTR t)
         {
-            if (t->parent)
+            int x = 0;
+            while (t->parent && x < 2)
             {
-                if(t->parent->left && t->parent->left == t)
-                    t->parent->height --;
-                else if(t->parent->right && t->parent->right == t)
-                    t->parent->height ++;
-                _adjust(t->parent);
+                    if(t->parent->left == t)
+                        t->parent->height ++;
+                    else if(t->parent->right == t)
+                        t->parent->height --;
+                x++;
             }
         }
 
@@ -185,10 +192,11 @@ class map{
 
         void    _left_rotate(nodePTR x)
         {
-            nodePTR x;
             nodePTR y = x->right;
             if (y->left)
                 x->right = y->left;
+            else
+                x->right = NULL;
             if (!x->parent)
                 _root = y;
             else if (x->parent->right == x)
@@ -202,10 +210,11 @@ class map{
 
         void    _right_rotate(nodePTR x)
         {
-            nodePTR x;
             nodePTR y = x->left;
             if (y->right)
                 x->left = y->right;
+            else
+                x->left = NULL;
             if (!x->parent)
                 _root = y;
             else if (x->parent->right == x)
@@ -223,15 +232,57 @@ class map{
             dad = x->parent;
             _left_rotate(x);
             _right_rotate(dad);
-        }
+        };
         void _right_left(nodePTR x)
         {
             nodePTR dad;
             dad = x->parent;
             _right_rotate(x);
             _left_rotate(dad);
-        }
-        
+        };
+        void    _rebalance(nodePTR x)
+        {
+            nodePTR papy;
+
+            if (x->parent && x->parent->parent)
+            {
+                papy = x->parent->parent;
+                if (papy->height > 1)
+                {
+                    papy->height = 0;
+                    x->parent->height = 0;
+                    x->height = 0;
+                    if (_comp(x->data.first , papy->left->data.first))
+                        _right_rotate(papy);
+                    else
+                        _left_right(x->parent);
+                    _counter_adjust(papy->parent);
+                }
+                else if (papy->height < -1)
+                {
+                    papy->height = 0;
+                    x->parent->height = 0;
+                    x->height = 0;
+                    if(_comp(papy->right->data.first, x->data.first))
+                        _left_rotate(papy);
+                    else
+                        _right_left(x->parent);
+                    _counter_adjust(papy->parent);
+                }
+            }
+        };
+        void    _counter_adjust(nodePTR t)
+        {
+            int x = 0;
+            while (t->parent && x < 2)
+            {
+                    if(t->parent->left == t)
+                        t->parent->height --;
+                    else if(t->parent->right == t)
+                        t->parent->height ++;
+                x++;
+            }
+        };
     private:
         allocator_type      _alloc;
         allocator_node      _alloc_node;
