@@ -114,7 +114,10 @@ class map{
         void    print_max(const nodePTR t)
         {
             if (!t->right)
+            {
+                std::cout << "ROOT: " << _root->height << std::endl;
                 std::cout << t->data.second << std::endl;
+            }
             else
             {
                 std::cout << t->data.first << std::endl;
@@ -142,39 +145,9 @@ class map{
         }
         void    _delete_tree()
         {
-            nodePTR temp = NULL;
             while(_root)
             {
-                if (_root->left)
-                {
-                    temp = _get_min(_root);
-                    (temp->parent->left == temp) ? temp->parent->left = NULL : temp->parent->right = NULL;
-                }
-                else if (_root->right)
-                {
-                    temp = _get_max(_root);
-                    (temp->parent->left == temp) ? temp->parent->left = NULL : temp->parent->right = NULL;
-                }
-                else
-                {
-                    temp = _root;
-                    _root = NULL;
-                }
-                _alloc_node.destroy(temp);
-                _alloc_node.deallocate(temp, 1);
-            }
-        }
-
-        void    _adjust(nodePTR t)
-        {
-            int x = 0;
-            while (t->parent && x < 2)
-            {
-                    if(t->parent->left == t)
-                        t->parent->height ++;
-                    else if(t->parent->right == t)
-                        t->parent->height --;
-                x++;
+                _de
             }
         }
 
@@ -192,20 +165,32 @@ class map{
 
         void    _left_rotate(nodePTR x)
         {
+            std::cout << "Left rotate value" << x->data.first << std::endl;
             nodePTR y = x->right;
             if (y->left)
                 x->right = y->left;
             else
                 x->right = NULL;
             if (!x->parent)
+            {
+                std::cout << "3" << std::endl;
                 _root = y;
+            }
             else if (x->parent->right == x)
+            {
+                std::cout << "1" << std::endl;
                 x->parent->right = y;
+            }
             else
+            {
+                std::cout << "2" << std::endl;
                 x->parent->left = y;
+            }
             y->parent = x->parent;
             x->parent = y;
             y->left = x;
+            if (y == _root)
+                y->parent = NULL;
         };
 
         void    _right_rotate(nodePTR x)
@@ -224,6 +209,9 @@ class map{
             y->parent = x->parent;
             x->parent = y;
             y->right = x;
+            if (y == _root)
+                y->parent = NULL;
+            x->height = 
         };
 
         void _left_right(nodePTR x)
@@ -246,12 +234,12 @@ class map{
 
             if (x->parent && x->parent->parent)
             {
+                std::cout << "x value:" <<x->data.first << std::endl;
                 papy = x->parent->parent;
+                std::cout << "papy : " <<papy->height << "papy value : " <<papy->data.first<< std::endl;
                 if (papy->height > 1)
                 {
-                    papy->height = 0;
-                    x->parent->height = 0;
-                    x->height = 0;
+                    std::cout << "in supp out" << papy->left->data.first<< std::endl;
                     if (_comp(x->data.first , papy->left->data.first))
                         _right_rotate(papy);
                     else
@@ -260,29 +248,48 @@ class map{
                 }
                 else if (papy->height < -1)
                 {
-                    papy->height = 0;
-                    x->parent->height = 0;
-                    x->height = 0;
+                    std::cout << "in under out" << std::endl;
                     if(_comp(papy->right->data.first, x->data.first))
+                    {
                         _left_rotate(papy);
+                        std::cout << "left rotate" << std::endl;
+                    }
                     else
                         _right_left(x->parent);
                     _counter_adjust(papy->parent);
                 }
+                _rebalance(x->parent);
             }
+            std::cout <<  "hello" << std::endl;
+            return;
         };
+
         void    _counter_adjust(nodePTR t)
         {
-            int x = 0;
-            while (t->parent && x < 2)
+            if(t->parent)
             {
-                    if(t->parent->left == t)
-                        t->parent->height --;
-                    else if(t->parent->right == t)
-                        t->parent->height ++;
-                x++;
+                if(t->parent->left == t)
+                    t->parent->height --;
+                else if(t->parent->right == t)
+                    t->parent->height ++;
+                _counter_adjust(t->parent);
             }
+            return;
         };
+
+        void    _adjust(nodePTR t)
+        {
+            if(t->parent)
+            {
+                if(t->parent->left == t)
+                    t->parent->height ++;
+                else if(t->parent->right == t)
+                    t->parent->height --;
+                _adjust(t->parent);
+            }
+            return;
+        }
+
     private:
         allocator_type      _alloc;
         allocator_node      _alloc_node;
