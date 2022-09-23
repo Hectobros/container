@@ -1,17 +1,8 @@
 #include "./utils/complements.hpp"
 #include <functional>
-
+#include "./iteratormap.hpp"
+#include "./node.hpp"
 namespace ft{
-
-template <class T>
-class Node {
-    public:
-    T data;
-    Node    *parent;
-    Node    *left;
-    Node    *right;
-    int height;
-};
 
 template < class Key, class T,class Compare = ft::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
 class map{
@@ -41,9 +32,9 @@ class map{
         protected:
             value_compare(const key_compare& c) : comp (c) { }
             key_compare comp;
-        };/*
-        typedef XXXX  iterator;
-        typedef XXX     const_iterator;
+        };
+        typedef typename ft::biterator<node>                    iterator;
+        /*typedef XXX     const_iterator;
         typedef XXX     reverse_iterator;
         typedef XXX     const_reverse_iterator;*/
         typedef std::ptrdiff_t                              difference_type;
@@ -66,21 +57,29 @@ class map{
             nodePTR temp = _root;
             while(temp)
             {
-                std::cout << "Pas le max mais : " << temp->data.first << " Parent : " << temp->parent <<std::endl;
                 temp = temp->right;
             }
         };
 
+        iterator begin()
+        {
+            std::cout << min(_root)->data.first << std::endl;
+            return iterator(min(_root));
+        }
         nodePTR max(nodePTR x)
         {
-            if (x && x->right)
-                min(x->right);
+            while(x && x->right)
+            {
+                x = x->right;
+            }
             return (x);
         }
         nodePTR min(nodePTR x)
         {
-            if (x && x->left)
-                min(x->left);
+            while(x && x->left)
+            {
+                x = x->left;
+            }
             return (x);
         }
 
@@ -96,7 +95,6 @@ class map{
             while(_root)
             {
                 _root = _deleteNode(_root, min(_root)->data);
-                std::cout << _root << std::endl;
             }
         };
 

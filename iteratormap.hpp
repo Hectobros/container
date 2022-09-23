@@ -1,6 +1,6 @@
-#ifndef ITERATORMAP_HPP
-#define ITERATORMAP_HPP
-#include "map.hpp"
+#ifndef BITERATORMAP_HPP
+#define BITERATORMAP_HPP
+#include "node.hpp"
 
 namespace ft
 {
@@ -8,34 +8,102 @@ namespace ft
     class biterator
     {
         private:
-        T *node;
+            T *node;
+            T *nplus;
+            T *nmoins;
         public:
-        biterator(T *n) : node(n) {};
+        biterator(T *n) : node(n), nplus(NULL), nmoins(NULL) {};
         biterator() : node(NULL){};
         biterator& operator=(biterator rhs)
         {
             rhs.print_value();
             node = rhs.node;
+            nplus = rhs.nplus;
+            nmoins = rhs.nmoins;
             return *this;
         };
-        void operator++()
+        biterator& operator++()
         {
-            if(node->get_type() != -2)
+            if(node)
             {
-                node = node->get_next();
-                std::cout << "LA NODE EST " << node->get_value() << " et sont pere est " <<node->get_parent() << "Et son addresse" << &node <<std::endl;
-
+                if (node->right)
+                {
+                    node = node->right;
+                    while (node->left)
+                    {
+                        node = node->left;
+                    }
+                }
+                else
+                {
+                    while (node->parent && node->parent->right == node)
+                    {
+                        node = node->parent;
+                    }
+                    if (node->parent ==  NULL)
+                    {
+                        while (node->right)
+                        {
+                            node = node->right;
+                        }
+                        nplus = node;
+                        node = NULL;
+                    }
+                    else
+                        node = node->parent;
+                }
             }
+            else if (nmoins)
+            {
+                node = nmoins;
+                nmoins = NULL;
+            }
+            print_value();
+            return *this;
         };
-        void operator--()
+        biterator& operator--()
         {
-            if(node->get_type() != -3)
-                node = node->get_prev();
-            std::cout << "LA NODE EST " << node->get_value() << std::endl;
+            if(node)
+            {
+                if (node->left)
+                {
+                    node = node->left;
+                    while (node->right)
+                    {
+                        node = node->right;
+                    }
+                }
+                else
+                {
+                    while (node->parent && node->parent->left == node)
+                    {
+                        node = node->parent;
+                    }
+                    if (node->parent ==  NULL)
+                    {
+                        while (node->left)
+                        {
+                            node = node->left;
+                        }
+                        nmoins = node;
+                        node = NULL;
+                    }
+                    else
+                        node = node->parent;
+                }
+            }
+            else if (nplus)
+            {
+                node = nplus;
+                nplus = NULL;
+            }
+            print_value();
+            return *this;
         };
         void print_value()
         {
-            std::cout << "VALUE : " << node->get_value() << std::endl;
+            if (node)
+                std::cout << "Rank : " << node->data.first << std::endl;
         }
     };
 };
