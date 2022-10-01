@@ -1,27 +1,47 @@
 #ifndef BITERATORMAP_HPP
 #define BITERATORMAP_HPP
 #include "node.hpp"
+#include "./utils/iterator_traits.hpp"
+#include "./utils/complements.hpp"
 
 namespace ft
 {
     template <typename T>
     class biterator
     {
-        private:
-            T *node;
-            T *nplus;
-            T *nmoins;
         public:
-        biterator(T *n) : node(n), nplus(NULL), nmoins(NULL) {};
+		typedef typename ft::iterator_traits<T*>::value_type		value_type;
+		typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
+		typedef typename ft::iterator_traits<T*>::pointer			pointer;
+		typedef typename ft::iterator_traits<T*>::reference			reference;
+		typedef typename std::bidirectional_iterator_tag			iterator_category;
+        biterator( Node<value_type> * n, Node<value_type> * np,  Node<value_type> * nm) : node(n), nplus(np), nmoins(nm) {};
         biterator() : node(NULL){};
-        biterator& operator=(biterator rhs)
+		~biterator() 
+		{
+		};
+		biterator(const biterator &rhs)
+		{
+			*this = rhs;
+		}
+        biterator& operator=(const biterator &rhs)
         {
-            rhs.print_value();
+            //rhs.print_value();
             node = rhs.node;
             nplus = rhs.nplus;
             nmoins = rhs.nmoins;
             return *this;
         };
+
+		operator biterator<const value_type>() {
+		biterator<const value_type> temp;
+		temp.node = node;
+		temp.nplus = nplus;
+		temp.nmoins = nmoins;
+		return(temp);
+		// return bidirectional_iterator<const value_type>(reinterpret_cast<Node<const T> *>(_ptr));
+		}
+
         biterator& operator++()
         {
             if(node)
@@ -58,13 +78,22 @@ namespace ft
                 node = nmoins;
                 nmoins = NULL;
             }
-            print_value();
+            //print_value();
             return *this;
         };
+
+		biterator operator++(int)
+		{
+			biterator temp = *this;
+			operator++();
+			return temp;
+		}
+
         biterator& operator--()
         {
             if(node)
             {
+				//presentezvous(node);
                 if (node->left)
                 {
                     node = node->left;
@@ -77,6 +106,7 @@ namespace ft
                 {
                     while (node->parent && node->parent->left == node)
                     {
+						//std::cout << "Je suis fils de gauche donc je suis rentré" << std::endl;
                         node = node->parent;
                     }
                     if (node->parent ==  NULL)
@@ -97,14 +127,77 @@ namespace ft
                 node = nplus;
                 nplus = NULL;
             }
-            print_value();
+            //print_value();
             return *this;
         };
-        void print_value()
+
+		biterator operator--(int)
+		{
+			biterator temp = *this;
+			operator--();
+			return temp;
+		}
+
+		reference	operator*()
+		{
+			return node->data;
+		}
+
+		pointer		operator->()
+		{
+			return (&(node->data));
+		}
+
+		bool	operator==(const biterator &rhs)
+		{
+			return (node == rhs.node);
+		}
+		bool	operator!=(const biterator &rhs)
+		{
+			return (!(node == rhs.node));
+		}
+/// débug
+		void	presentezvous(T *n) const
+		{
+			if(n)
+			{
+				std::cout << "Je suis :" << n->data.first << std::endl;
+				if (n->left)
+					std::cout << "Mon enfant gauche est " << n->left->data.first << std::endl;
+				else
+					std::cout << "Je n'ai pas d'enfant à gauche "<< std::endl;
+				if (n->right)
+					std::cout << "Mon enfant droite est " << n->right->data.first << std::endl;
+				else
+					std::cout << "Je n'ai pas d'enfant à droite "<< std::endl;
+				if (n->parent)
+				{
+					std::cout << "Mon enfant parent est " << n->parent->data.first << std::endl;
+					if (n == n->parent->right)
+						std::cout << "Je suis fils de droite" << std::endl;
+					else
+						std::cout << "Je suis fils de gauche" << std::endl;
+				}
+				else
+					std::cout << "Je n'ai pas d'enfant à parent "<< std::endl;
+				
+
+			}
+			else
+			{
+				std::cout << "Je n'existe pas" << std::endl;
+			}
+		}
+
+        void print_value() const
         {
             if (node)
                 std::cout << "Rank : " << node->data.first << std::endl;
         }
+		private:
+            Node<value_type> * node;
+            Node<value_type> * nplus;
+            Node<value_type> * nmoins;
     };
 };
 

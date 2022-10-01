@@ -2,6 +2,7 @@
 #include <functional>
 #include "./iteratormap.hpp"
 #include "./node.hpp"
+#include "./utils/reverse_iterator.hpp"
 namespace ft{
 
 template < class Key, class T,class Compare = ft::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
@@ -33,14 +34,16 @@ class map{
             value_compare(const key_compare& c) : comp (c) { }
             key_compare comp;
         };
-        typedef typename ft::biterator<node>                    iterator;
-        /*typedef XXX     const_iterator;
-        typedef XXX     reverse_iterator;
-        typedef XXX     const_reverse_iterator;*/
+        typedef typename ft::biterator<value_type>                    iterator;
+        typedef typename ft::biterator<const value_type>              const_iterator;
+        typedef typename ft::reverse_iterator<iterator>				  reverse_iterator;
+		typedef typename ft::reverse_iterator<const_iterator> 		  const_reverse_iterator;
         typedef std::ptrdiff_t                              difference_type;
         typedef std::size_t                                 size_type;
         
-        map() : _alloc(allocator_type()), _alloc_node(allocator_node()), _comp(key_compare()){
+		//Constructor && Destructor
+        explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) :  _alloc(alloc) , _comp(comp)
+		{
             _root = NULL;
         };
         map(const value_type &v) : _alloc(allocator_type()), _alloc_node(allocator_node()) , _comp(key_compare()){
@@ -51,7 +54,7 @@ class map{
             if (_root)
                 _delete_tree();
         };
-
+		//DEBUG
         void    print_max()
         {
             nodePTR temp = _root;
@@ -61,60 +64,65 @@ class map{
             }
         };
 
+
+		//ITERATORS
         iterator begin()
         {
-            std::cout << min(_root)->data.first << std::endl;
-            return iterator(min(_root));
-        }
-        nodePTR max(nodePTR x)
-        {
-            while(x && x->right)
-            {
-                x = x->right;
-            }
-            return (x);
-        }
-        nodePTR min(nodePTR x)
-        {
-            while(x && x->left)
-            {
-                x = x->left;
-            }
-            return (x);
+            return iterator(min(_root), NULL, NULL);
         }
 
+		iterator end()
+        {
+            return iterator(NULL, max(_root), NULL);
+        }
+
+		const_iterator cbegin() const
+		{
+            return const_iterator(min(_root), NULL, NULL);
+		}
+
+		const_iterator cend() const
+		{
+            return const_iterator(NULL, max(_root), NULL);
+        }
+
+		reverse_iterator rbegin()
+        {
+            return reverse_iterator(end());
+        }
+
+		reverse_iterator rend()
+        {
+            return reverse_iterator(begin());
+        }
+
+		const_reverse_iterator crbegin() const
+		{
+            return const_reverse_iterator(cend());
+		}
+
+		const_reverse_iterator crend() const
+		{
+            return const_reverse_iterator(cbegin());
+        }
+		//Capacity
+		//Element acess
+		//Modifiers
         void    insert(value_type v)
         {
             _root = insertNode(_root, v);
             if (_root->parent)
                 _root->parent = NULL;
+			redaronade(_root);
         };
+		//Observers
+		//Operation
+		//Allocator
+		allocator_type get_allocator() const
+		{
+			return _alloc;
+		}
 
-        void    _delete_tree()
-        {
-            while(_root)
-            {
-                _root = _deleteNode(_root, min(_root)->data);
-            }
-        };
-
-        nodePTR    _new_node(nodePTR dad, value_type v)
-        {
-            nodePTR n_node;
-            n_node = _alloc_node.allocate(1);
-            n_node->parent = dad;
-            n_node->data = v;
-            n_node->height = 0;
-            n_node->right = NULL;
-            n_node->left = NULL;
-            return (n_node);
-        };
-        void    deleteNode(value_type v)
-        {
-            _root = _deleteNode(_root, v);
-            if (_root && _root->parent)
-                _root->parent = NULL;
-        }
     private:
         allocator_type      _alloc;
         allocator_node      _alloc_node;
@@ -158,7 +166,7 @@ class map{
             x->right = y;
             y->left = T2;
             y->height = max(height(y->left), height(y->right)) + 1;
-            x->height = max(height(x->left),height(x->right)) + 1;
+            x->height = max(height(x->left), height(x->right)) + 1;
             return x;
         };
         nodePTR leftRotate(nodePTR x) {
@@ -166,6 +174,7 @@ class map{
             nodePTR T2 = y->left;
             y->left = x;
             x->right = T2;
+			x->parent = y;
             x->height = max(height(x->left), height(x->right)) + 1;
             y->height = max(height(y->left), height(y->right)) + 1;
             return y;
@@ -195,8 +204,6 @@ class map{
                 node->right = insertNode(node->right, v);
             else
                 return node;
-            
-            
             node->height = 1 + max(height(node->left), height(node->right));
             filiation(node);
             int balanceFactor = getBalanceFactor(node);
@@ -289,5 +296,60 @@ class map{
             }
             return root;
         }
+		void    _delete_tree()
+        {
+            while(_root)
+            {
+                _root = _deleteNode(_root, min(_root)->data);
+            }
+        };
+
+        nodePTR    _new_node(nodePTR dad, value_type v)
+        {
+            nodePTR n_node;
+            n_node = _alloc_node.allocate(1);
+            n_node->parent = dad;
+            n_node->data = v;
+            n_node->height = 0;
+            n_node->right = NULL;
+            n_node->left = NULL;
+            return (n_node);
+        };
+        void    deleteNode(value_type v)
+        {
+            _root = _deleteNode(_root, v);
+            if (_root && _root->parent)
+                _root->parent = NULL;
+        }
+		void	redaronade(nodePTR a)
+		{
+			if(a->left)
+			{
+				a->left->parent = a;
+				redaronade(a->left);
+			}
+			if(a->right)
+			{
+				a->right->parent = a;
+				redaronade(a->right);
+			}
+		}
+		nodePTR max(nodePTR x) const
+        {
+            while(x && x->right)
+            {
+                x = x->right;
+            }
+            return (x);
+        }
+        nodePTR min(nodePTR x) const
+        {
+            while(x && x->left)
+            {
+                x = x->left;
+            }
+            return (x);
+        }
+
     };
 }
