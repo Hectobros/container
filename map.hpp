@@ -201,6 +201,58 @@ class map{
             else
                 return end();
         };
+
+        iterator lower_bound( const Key& key )
+        {
+            iterator temp = begin();
+            while (temp != end() && temp->first < key)
+            {
+                temp++;
+            }
+            temp--;
+            return temp;
+        };
+
+        const_iterator lower_bound( const Key& key ) const
+        {
+            const_iterator temp = begin();
+            while (temp != end() && temp->first < key)
+            {
+                temp++;
+            }
+            temp--;
+            return temp;
+        };
+
+        iterator upper_bound( const Key& key )
+        {
+            const_iterator temp = begin();
+            while (temp != end() && temp->first <= key)
+            {
+                temp++;
+            }
+            return temp;
+        };
+
+        const_iterator upper_bound( const Key& key ) const
+        {
+            const_iterator temp = begin();
+            while (temp != end() && temp->first <= key)
+            {
+                temp++;
+            }
+            return temp;
+        };
+
+        std::pair<iterator,iterator> equal_range( const Key& key )
+        {
+            return std::make_pair(lower_bound(key),upper_bound(key));
+        };
+
+        std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
+        {
+            return std::make_pair(lower_bound(key),upper_bound(key));
+        };
 		//Observers
         key_compare key_comp() const
         {
