@@ -1,5 +1,5 @@
 #include <iostream>
-#include "map4.hpp"
+#include "map.hpp"
 #include <map>
 #include <utility>
 
@@ -14,7 +14,7 @@ int main()
 		ft::map<int, int>::iterator f;
 		ft::map<int, int>::const_iterator p;
 		f = b.begin();
-		p = b.cbegin();
+		p = b.begin();
 		for(int x = 0; x < 2; x++)
 		{
 			std::cout << f->first << " " << p->first << std::endl;
@@ -22,13 +22,14 @@ int main()
 			p++;
 		}
 		f = b.end();
-		p = b.cend();
+		p = b.end();
 		for(int x = 0; x < 2; x++)
 		{
 			f--;
 			p--;
 			std::cout << f->first << " " << p->first << std::endl;
 		}
+		std::cout << "ft max size " << b.max_size() << std::endl;
 	}
 	{
 		std::map<int, int>b;
@@ -54,6 +55,7 @@ int main()
 			p--;
 			std::cout << f->first << " " << p->first << std::endl;
 		}
+		std::cout << "std max size " << b.max_size() << std::endl;
 	}
 	
 	{
@@ -91,7 +93,7 @@ int main()
 		ft::map<int, int>::reverse_iterator f;
 		ft::map<int, int>::const_reverse_iterator p;
 		f = b.rbegin();
-		p = b.crbegin();
+		p = b.rbegin();
 		for(int x = 0; x < 2; x++)
 		{
 			
@@ -100,7 +102,7 @@ int main()
 			std::cout << f->first << " " << p->first << std::endl;
 		}
 		f = b.rend();
-		p = b.crend();
+		p = b.rend();
 		for(int x = 0; x < 2; x++)
 		{
 			std::cout << f->first << " " << p->first << std::endl;

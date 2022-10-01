@@ -34,10 +34,11 @@ namespace ft
         };
 
 		operator biterator<const value_type>() {
-		biterator<const value_type> temp;
-		temp.node = node;
-		temp.nplus = nplus;
-		temp.nmoins = nmoins;
+		biterator<const value_type> temp(node,nplus,nmoins);
+		//temp = *this;
+        //temp.node = node;
+		//temp.nplus = nplus;
+		//temp.nmoins = nmoins;
 		return(temp);
 		// return bidirectional_iterator<const value_type>(reinterpret_cast<Node<const T> *>(_ptr));
 		}
