@@ -52,7 +52,8 @@ class reverse_iterator
         {
 			iterator_type temp;
 			temp = current;
-            return *(--temp);
+            temp--;
+            return *(temp);
         };
         pointer operator->() const {
             return &(operator*());

@@ -43,6 +43,11 @@ namespace ft
 		// return bidirectional_iterator<const value_type>(reinterpret_cast<Node<const T> *>(_ptr));
 		}
 
+        operator biterator<const T>() const
+        {
+            return(biterator<const T>(node));
+        }
+
         biterator& operator++()
         {
             if(node)
@@ -151,7 +156,11 @@ namespace ft
 
 		bool	operator==(const biterator &rhs)
 		{
-			return (node == rhs.node);
+            if (!node && !rhs.node)
+                return true;
+            else if (!node || !rhs.node)
+                return false;
+			return (node->data == rhs.node->data);
 		}
 		bool	operator!=(const biterator &rhs)
 		{
@@ -194,12 +203,31 @@ namespace ft
         {
             if (node)
                 std::cout << "Rank : " << node->data.first << std::endl;
-        }
+        }/*
+        bool operator==( const biterator &rhs )
+        {
+            return (data == *rhs);
+        };
+        bool operator!=( const biterator &rhs)
+        {
+            return (!(*this == rhs));
+        };*/
 		private:
             Node<value_type> * node;
             Node<value_type> * nplus;
             Node<value_type> * nmoins;
     };
+/*
+    template <class Iter1, class Iter2>
+    bool operator==(ft::biterator<Iter1> const &lhs, ft::biterator<Iter2> const &rhs )
+    {
+        return (*lhs == *rhs);
+    };
+    template <class Iter1, class Iter2>
+    bool operator!=(ft::biterator<Iter1> const &lhs, ft::biterator<Iter2> const &rhs )
+    {
+        return (!(lhs == rhs));
+    };*/
 };
 
 

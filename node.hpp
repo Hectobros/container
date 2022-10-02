@@ -13,6 +13,10 @@ class Node {
     Node    *right;
     int height;
 	Node() {};
+	Node(const T& value) : data(value), parent(NULL), left(NULL) ,right(NULL), height(1)
+	{
+
+	};
 	~Node() {};
 	operator Node<const T>() {
 		Node<const T>	ret;

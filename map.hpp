@@ -61,7 +61,7 @@ class map{
             _size = 1;
         };
 
-		map (const map& x) : _alloc(x.allocator_type), _alloc_node(x.allocator_node) , _comp(x.key_compare) , _size(0)
+		map (const map& x) : _alloc(x._alloc), _alloc_node(x._alloc_node) , _comp(x._comp) , _size(0)
 		{
 			_root = NULL;
 			insert(x.begin(),x.end());
@@ -207,18 +207,29 @@ class map{
 		size_type erase( const Key& key )
 		{
 			if (_find(key) == NULL)
+            {
 				return 0;
-			else
+            }
+            else
 			{
-				deleteNode(*_find(key).data);
+				deleteNode(_find(key)->data);
 				return 1;
 			}
 		};
 
 		void erase( iterator pos )
 		{
-			deleteNode(*_find(pos->data.first).data);
+			deleteNode(_find(pos->first)->data);
 		};
+
+        void erase (iterator first, iterator last)
+        {
+            while (first != last)
+            {
+                deleteNode(_find(first->first)->data);
+                first++;
+            }
+        };
 
 		void swap( map& other )
 		{
@@ -286,7 +297,6 @@ class map{
             {
                 temp++;
             }
-            temp--;
             return temp;
         };
 
@@ -297,14 +307,13 @@ class map{
             {
                 temp++;
             }
-            temp--;
             return temp;
         };
 
         iterator upper_bound( const Key& key )
         {
-            const_iterator temp = begin();
-            while (temp != end() && temp->first <= key)
+            iterator temp = begin();
+            while ((temp != end()) && (temp->first <= key))
             {
                 temp++;
             }
@@ -321,14 +330,14 @@ class map{
             return temp;
         };
 
-        std::pair<iterator,iterator> equal_range( const Key& key )
+        ft::pair<iterator,iterator> equal_range( const Key& key )
         {
-            return std::make_pair(lower_bound(key),upper_bound(key));
+            return ft::make_pair(lower_bound(key),upper_bound(key));
         };
 
-        std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
+        ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
         {
-            return std::make_pair(lower_bound(key),upper_bound(key));
+            return ft::make_pair(lower_bound(key),upper_bound(key));
         };
 		//Observers
         key_compare key_comp() const
@@ -366,7 +375,7 @@ class map{
             return N->height;
         };
 
-        nodePTR _find(const Key& key)
+        nodePTR _find(const Key& key) const
         {
             nodePTR temp;
             if (_root == NULL)
@@ -392,7 +401,7 @@ class map{
             return temp;
         };
 
-		nodePTR _find(const value_type& v)
+		nodePTR _find(const value_type& v) const
         {
             nodePTR temp;
             if (_root == NULL)
@@ -429,11 +438,12 @@ class map{
         }
         nodePTR newNode(value_type v) {
             nodePTR node = _alloc_node.allocate(1);
-            node->data = v;
+            _alloc_node.construct(node, v);
+            /*node->data = v;
             node->left = NULL;
             node->right = NULL;
             node->parent = NULL;
-            node->height = 1;
+            node->height = 1;*/
             _size++;
             return (node);
         };
@@ -533,7 +543,8 @@ class map{
                     }
                     else
                         *root = *temp;
-                    _alloc_node.destroy(temp);
+                    if (temp != NULL)
+                        _alloc_node.destroy(temp);
                     _alloc_node.deallocate(temp, 1);
                 }
                 else
@@ -631,6 +642,53 @@ class map{
         }
 
     };
+
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator==( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    {
+        if (lhs.size() != rhs.size())
+            return false;
+        typename ft::map<Key,T,Compare,Alloc>::const_iterator lhsit = lhs.begin();
+        typename ft::map<Key,T,Compare,Alloc>::const_iterator rhsit = rhs.begin();
+        while (lhsit != lhs.end())
+        {
+            if (*lhsit != *rhsit)
+                return false;
+            lhsit++;
+            rhsit++;
+        }
+        return true;
+    };
+
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    {
+        return(!(lhs == rhs));
+    };
+
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator<( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    {
+        return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+    };
+
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator<=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    {
+        return (!(rhs < lhs));
+    };
+
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator>( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    {
+        return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+    };
+
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator>=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+   {
+        return (!(lhs < rhs));
+    }; 
 }
 
 #endif
