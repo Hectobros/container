@@ -49,15 +49,41 @@ class map{
 		{
             _root = NULL;
         };
+
+		template< class InputIt >
+		map( InputIt first, InputIt last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type() ) : _alloc(alloc), _alloc_node(allocator_node()) , _comp(comp) , _size(0)
+		{
+			_root = NULL;
+			insert(first, last);
+		};
         map(const value_type &v) : _alloc(allocator_type()), _alloc_node(allocator_node()) , _comp(key_compare()){
             _root = insertNode(NULL, v);
             _size = 1;
         };
+
+		map (const map& x) : _alloc(x.allocator_type), _alloc_node(x.allocator_node) , _comp(x.key_compare) , _size(0)
+		{
+			_root = NULL;
+			insert(x.begin(),x.end());
+		};
+
         ~map()
         {
             if (_root)
                 _delete_tree();
         };
+
+		map& operator= (const map& x)
+		{
+			if (_root)
+				_delete_tree();
+			_alloc = x._alloc;
+			_alloc_node = x._alloc_node;
+			_comp = x._comp;
+			_size = 0;
+			insert(x.begin(),x.end());
+			return *this;
+		};
 		//DEBUG
         void    print_max()
         {
@@ -157,15 +183,66 @@ class map{
                 return insert(ft::make_pair(key, T())).first->second;
         };
 		//Modifiers
-        void    insert(value_type v)
+        ft::pair<iterator, bool> insert( const value_type& value )
         {
-            _root = insertNode(_root, v);
+			if (_find(value) != NULL)
+				return (ft::make_pair(iterator(_find(value), NULL, NULL), false));
+            _root = insertNode(_root, value);
             if (_root->parent)
                 _root->parent = NULL;
 			redaronade(_root);
+			return (ft::make_pair(iterator(_find(value), NULL, NULL), true));
         };
 
-        void clear()
+		template< class InputIt >
+		void insert( InputIt first, InputIt last)
+		{
+			while(first != last)
+			{
+				insert((*first));
+				first++;
+			}
+		};
+        
+		size_type erase( const Key& key )
+		{
+			if (_find(key) == NULL)
+				return 0;
+			else
+			{
+				deleteNode(*_find(key).data);
+				return 1;
+			}
+		};
+
+		void erase( iterator pos )
+		{
+			deleteNode(*_find(pos->data.first).data);
+		};
+
+		void swap( map& other )
+		{
+			map temp;
+			temp._alloc = _alloc;
+            temp._alloc_node = _alloc_node;
+           	temp._comp = _comp;  
+         	temp._root = _root;
+        	temp.size = _size;
+
+			_alloc = other._alloc;
+           	_alloc_node = other._alloc_node;
+            _comp = other._comp;  
+            _root = other._root;
+         	_size = other._size;
+
+			other._alloc = temp._alloc;
+			other._alloc_node = temp._alloc_node;
+			other._comp = temp._comp;
+			other._root = temp._root;
+			other._size = temp._size;
+		};
+
+		void clear()
         {
             if (_root)
                 _delete_tree();
@@ -276,9 +353,6 @@ class map{
         nodePTR            _root;
         size_type          _size;
 
-
-
-
         //TREE 
         int max(int a, int b)
         {
@@ -316,7 +390,34 @@ class map{
                 }
             }
             return temp;
-        }
+        };
+
+		nodePTR _find(const value_type& v)
+        {
+            nodePTR temp;
+            if (_root == NULL)
+                return NULL;
+            temp = _root;
+            while(temp->data.first != v.first)
+            {
+                if (_comp(temp->data.first, v.first))
+                {
+                    if(temp->right)
+                        temp = temp->right;
+                    else
+                        return NULL;
+                }
+                else
+                {
+                    if(temp->left)
+                        temp = temp->left;
+                    else
+                        return NULL;
+                }
+            }
+			return temp;
+		};
+
         void filiation(nodePTR N)
         {
             if (N == NULL)

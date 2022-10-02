@@ -2,6 +2,7 @@
 #define REVERSE_ITERATOR_HPP
 #include "iterator_traits.hpp"
 #include "../vector_utils/iterator_vector.hpp"
+#include "../iteratormap.hpp"
 #include <iostream>
 
 
@@ -31,7 +32,7 @@ class reverse_iterator
         }
 
 		operator ft::reverse_iterator<const T> () {
-			biterator<const value_type> temp;
+			ft::biterator<const value_type> temp;
 			temp.current = current;
 			return(temp);
 		}
@@ -49,7 +50,9 @@ class reverse_iterator
         ///Accessor
         reference operator *() const
         {
-            return *(base()--);
+			iterator_type temp;
+			temp = current;
+            return *(--temp);
         };
         pointer operator->() const {
             return &(operator*());
