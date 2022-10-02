@@ -10,20 +10,35 @@ namespace ft
     class biterator
     {
         public:
-		typedef typename ft::iterator_traits<T*>::value_type		value_type;
+        typedef typename ft::iterator_traits<T*>::value_type		value_type;
 		typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
 		typedef typename ft::iterator_traits<T*>::pointer			pointer;
 		typedef typename ft::iterator_traits<T*>::reference			reference;
 		typedef typename std::bidirectional_iterator_tag			iterator_category;
-        biterator( Node<value_type> * n, Node<value_type> * np,  Node<value_type> * nm) : node(n), nplus(np), nmoins(nm) {};
+
+        biterator(Node<T> * n) : node(n)
+        {
+            if (node == NULL)
+            {
+                nplus = node;
+                node = NULL;
+                nmoins = NULL;
+            }
+            else
+            {
+                nmoins = NULL;
+                nplus = NULL;
+            }
+        };
+        //biterator( const_node_type * n, const_node_type * np,const_node_type * nm) : node(n), nplus(np), nmoins(nm) {};
         biterator() : node(NULL){};
 		~biterator() 
 		{
 		};
-		biterator(const biterator &rhs)
-		{
-			*this = rhs;
-		}
+         biterator(const biterator &rhs)
+        {
+            *this = rhs;
+        };
         biterator& operator=(const biterator &rhs)
         {
             //rhs.print_value();
@@ -33,21 +48,16 @@ namespace ft
             return *this;
         };
 
-		operator biterator<const value_type>() {
-		biterator<const value_type> temp(node,nplus,nmoins);
-		//temp = *this;
-        //temp.node = node;
-		//temp.nplus = nplus;
-		//temp.nmoins = nmoins;
-		return(temp);
-		// return bidirectional_iterator<const value_type>(reinterpret_cast<Node<const T> *>(_ptr));
-		}
-
+		operator biterator<const T>() const
+        {
+            return(biterator<const T>(node));
+        }
+/*
         operator biterator<const T>() const
         {
             return(biterator<const T>(node));
         }
-
+*/
         biterator& operator++()
         {
             if(node)
@@ -93,7 +103,7 @@ namespace ft
 			biterator temp = *this;
 			operator++();
 			return temp;
-		}
+		};
 
         biterator& operator--()
         {
@@ -142,30 +152,34 @@ namespace ft
 			biterator temp = *this;
 			operator--();
 			return temp;
-		}
+		};
 
 		reference	operator*()
 		{
 			return node->data;
-		}
+		};
 
 		pointer		operator->()
 		{
 			return (&(node->data));
-		}
+		};
 
-		bool	operator==(const biterator &rhs)
+		bool	operator==(biterator &rhs) const
 		{
             if (!node && !rhs.node)
                 return true;
             else if (!node || !rhs.node)
                 return false;
 			return (node->data == rhs.node->data);
-		}
-		bool	operator!=(const biterator &rhs)
+		};
+		bool	operator!=(biterator &rhs) const
 		{
-			return (!(node == rhs.node));
-		}
+			if (!node && !rhs.node)
+                return false;
+            else if (!node || !rhs.node)
+                return true;
+			return (node->data != rhs.node->data);
+		};
 /// débug
 		void	presentezvous(T *n) const
 		{
@@ -190,20 +204,18 @@ namespace ft
 				}
 				else
 					std::cout << "Je n'ai pas d'enfant à parent "<< std::endl;
-				
-
 			}
 			else
 			{
 				std::cout << "Je n'existe pas" << std::endl;
 			}
-		}
+		};
 
         void print_value() const
         {
             if (node)
                 std::cout << "Rank : " << node->data.first << std::endl;
-        }/*
+        };/*
         bool operator==( const biterator &rhs )
         {
             return (data == *rhs);
@@ -213,9 +225,9 @@ namespace ft
             return (!(*this == rhs));
         };*/
 		private:
-            Node<value_type> * node;
-            Node<value_type> * nplus;
-            Node<value_type> * nmoins;
+            Node<T> * node;
+            Node<T> * nplus;
+            Node<T> * nmoins;
     };
 /*
     template <class Iter1, class Iter2>

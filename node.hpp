@@ -18,7 +18,7 @@ class Node {
 
 	};
 	~Node() {};
-	operator Node<const T>() {
+	operator Node<const T>() const {
 		Node<const T>	ret;
 		ret.data = reinterpret_cast<const T>(data);
 

@@ -98,22 +98,22 @@ class map{
 		//ITERATORS
         iterator begin()
         {
-            return iterator(min(_root), NULL, NULL);
+            return iterator(min(_root));
         }
 
 		iterator end()
         {
-            return iterator(NULL, max(_root), NULL);
+            return iterator(max(_root));
         }
 
 		const_iterator begin() const
 		{
-            return const_iterator(min(_root), NULL, NULL);
+            return const_iterator(min(_root));
 		}
 
 		const_iterator end() const
 		{
-            return const_iterator(NULL, max(_root), NULL);
+            return const_iterator(max(_root));
         }
 
 		reverse_iterator rbegin()

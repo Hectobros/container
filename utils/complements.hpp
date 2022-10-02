@@ -115,7 +115,7 @@ public:
 		new (this) pair(pr);
 		return *this;
 	}
-
+    
 	operator pair<const T1, const T2>() const {
 		return pair<const T1, const T2>(const_cast<const T1>(first), const_cast<const T2>(second));
 	}
