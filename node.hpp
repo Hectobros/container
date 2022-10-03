@@ -15,17 +15,20 @@ class Node {
 	Node() {};
 	Node(const T& value) : data(value), parent(NULL), left(NULL) ,right(NULL), height(1)
 	{
-
 	};
 	~Node() {};
-	operator Node<const T>() const {
-		Node<const T>	ret;
-		ret.data = reinterpret_cast<const T>(data);
+	Node(const Node& rhs) : data(rhs.data), parent(rhs.parent), left(rhs.left) ,right(rhs.right), height(1)
+	{
+	}
+	operator Node<const T>()  {
+		return(Node<const T>(data));
+		/*ret.data = reinterpret_cast<const T>(data);
 
 		ret.parent = reinterpret_cast<Node<const T> *>(parent);
 		ret.left = reinterpret_cast<Node<const T> *>(left);
 		ret.right = reinterpret_cast<Node<const T> *>(right);
-		return ret; 
+		ret.height = height;
+		return ret; */
 	}
 };
 }

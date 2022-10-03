@@ -186,12 +186,12 @@ class map{
         ft::pair<iterator, bool> insert( const value_type& value )
         {
 			if (_find(value) != NULL)
-				return (ft::make_pair(iterator(_find(value), NULL, NULL), false));
+				return (ft::make_pair(iterator(_find(value)), false));
             _root = insertNode(_root, value);
             if (_root->parent)
                 _root->parent = NULL;
 			redaronade(_root);
-			return (ft::make_pair(iterator(_find(value), NULL, NULL), true));
+			return (ft::make_pair(iterator(_find(value)), true));
         };
 
 		template< class InputIt >
@@ -275,7 +275,7 @@ class map{
             nodePTR temp;
             temp = _find(key);
             if (temp)
-                return iterator(temp, NULL, NULL);
+                return iterator(temp);
             else
                 return end();
         };
@@ -285,7 +285,7 @@ class map{
             nodePTR temp;
             temp = _find(key);
             if (temp)
-                return const_iterator(temp, NULL, NULL);
+                return const_iterator(temp);
             else
                 return end();
         };

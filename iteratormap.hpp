@@ -48,9 +48,9 @@ namespace ft
             return *this;
         };
 
-		operator biterator<const T>() const
+		operator biterator<const T>()
         {
-            return(biterator<const T>(node));
+            return biterator<const T>((Node<const T> *>)node);
         }
 /*
         operator biterator<const T>() const
