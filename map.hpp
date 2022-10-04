@@ -24,20 +24,18 @@ class map{
         typedef Node<value_type>                   node;
         typedef node                                        *nodePTR;
         typedef typename allocator_type::template rebind<node>::other allocator_node;
-        class value_compare : ft::binary_function<value_type, value_type, bool>
-        {
-        public:
-            bool operator()(
-                const value_type& left,
-                const value_type& right) const
-            {
-                return (comp(left.first, right.first));
-            }
-
-        protected:
-            value_compare(const key_compare& c) : comp (c) { }
-            key_compare comp;
-        };
+        class	value_compare {
+				public:
+					Compare comp;
+					value_compare (Compare c = key_compare()) : comp(c) {}  // constructed with map's comparison object
+					typedef bool result_type;
+					typedef value_type first_argument_type;
+					typedef value_type second_argument_type;
+					bool operator() (const value_type& x, const value_type& y) const
+					{
+						return comp(x.first, y.first);
+					}
+			};
         typedef typename ft::biterator<value_type>                    iterator;
         typedef typename ft::const_biterator<value_type>              const_iterator;
         typedef typename ft::reverse_iterator<iterator>				  reverse_iterator;
@@ -696,7 +694,13 @@ class map{
     bool operator>=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
    {
         return (!(lhs < rhs));
-    }; 
+    };
+
+	template< class Key, class T, class Compare, class Alloc >
+	void swap( ft::map<Key,T,Compare,Alloc>& x, ft::map<Key,T,Compare,Alloc>& y )
+	{
+        x.swap(y);
+    };
 }
 
 #endif
