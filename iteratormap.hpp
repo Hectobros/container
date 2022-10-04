@@ -18,8 +18,10 @@ namespace ft
 
         biterator(Node<T> * n) : node(n)
         {
-            if (node == NULL)
+            if (!node|| node->p == 1)
             {
+                if (node)
+                    node->p = 0;
                 nplus = node;
                 node = NULL;
                 nmoins = NULL;
@@ -50,6 +52,7 @@ namespace ft
 
         biterator& operator++()
         {
+            //presentezvous(node);
             if(node)
             {
                 if (node->right)
@@ -146,6 +149,7 @@ namespace ft
 
 		reference	operator*()
 		{
+            
 			return node->data;
 		};
 
@@ -155,14 +159,21 @@ namespace ft
 		};
 
 		bool		operator== (const biterator & rhs) const {
-			return node == rhs.node;
+            if (node && rhs.node)
+			    return node == rhs.node;
+            else if (nmoins && rhs.nmoins)
+                return nmoins == rhs.nmoins;
+            else if (nplus && rhs.nplus)
+                return nplus == rhs.nplus;
+            else
+                return node == rhs.node;
 		}
 		bool		operator!= (const biterator & rhs) const {
 			return node != rhs.node;
 		}
 
 /// débug
-		void	presentezvous(T *n) const
+		void	presentezvous(Node<T> *n) const
 		{
 			if(n)
 			{

@@ -7,64 +7,68 @@
 #include "./node.hpp"
 #include "./utils/reverse_iterator.hpp"
 #include "./const_iteratormap.hpp"
-namespace ft{
+namespace ft
+{
 
-template < class Key, class T,class Compare = ft::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
-class map{
+    template <class Key, class T, class Compare = ft::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
+    class map
+    {
     public:
-        typedef Key                                         key_type;
-        typedef T                                           mapped_type;
-        typedef ft::pair<const key_type, mapped_type>             value_type;
-        typedef Compare                                     key_compare;
-        typedef Alloc                                       allocator_type;
-        typedef typename allocator_type::reference          reference;
-        typedef typename allocator_type::const_reference    const_reference;
-        typedef typename allocator_type::pointer            pointer;
-        typedef typename allocator_type::const_pointer      const_pointer;
-        typedef Node<value_type>                   node;
-        typedef node                                        *nodePTR;
+        typedef Key key_type;
+        typedef T mapped_type;
+        typedef ft::pair<const key_type, mapped_type> value_type;
+        typedef Compare key_compare;
+        typedef Alloc allocator_type;
+        typedef typename allocator_type::reference reference;
+        typedef typename allocator_type::const_reference const_reference;
+        typedef typename allocator_type::pointer pointer;
+        typedef typename allocator_type::const_pointer const_pointer;
+        typedef Node<value_type> node;
+        typedef node *nodePTR;
         typedef typename allocator_type::template rebind<node>::other allocator_node;
-        class	value_compare {
-				public:
-					Compare comp;
-					value_compare (Compare c = key_compare()) : comp(c) {}  // constructed with map's comparison object
-					typedef bool result_type;
-					typedef value_type first_argument_type;
-					typedef value_type second_argument_type;
-					bool operator() (const value_type& x, const value_type& y) const
-					{
-						return comp(x.first, y.first);
-					}
-			};
-        typedef typename ft::biterator<value_type>                    iterator;
-        typedef typename ft::const_biterator<value_type>              const_iterator;
-        typedef typename ft::reverse_iterator<iterator>				  reverse_iterator;
-		typedef typename ft::reverse_iterator<const_iterator> 		  const_reverse_iterator;
-        typedef std::ptrdiff_t                              difference_type;
-        typedef std::size_t                                 size_type;
-        
-		//Constructor && Destructor
-        explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) :  _alloc(alloc) , _comp(comp) ,_size(0)
-		{
+        class value_compare
+        {
+        public:
+            Compare comp;
+            value_compare(Compare c = key_compare()) : comp(c) {} // constructed with map's comparison object
+            typedef bool result_type;
+            typedef value_type first_argument_type;
+            typedef value_type second_argument_type;
+            bool operator()(const value_type &x, const value_type &y) const
+            {
+                return comp(x.first, y.first);
+            }
+        };
+        typedef typename ft::biterator<value_type> iterator;
+        typedef typename ft::const_biterator<value_type> const_iterator;
+        typedef typename ft::reverse_iterator<iterator> reverse_iterator;
+        typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
+        typedef std::ptrdiff_t difference_type;
+        typedef std::size_t size_type;
+
+        // Constructor && Destructor
+        explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()) : _alloc(alloc), _comp(comp), _size(0)
+        {
             _root = NULL;
         };
 
-		template< class InputIt >
-		map( InputIt first, InputIt last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type() ) : _alloc(alloc), _alloc_node(allocator_node()) , _comp(comp) , _size(0)
-		{
-			_root = NULL;
-			insert(first, last);
-		};
-        map(const value_type &v) : _alloc(allocator_type()), _alloc_node(allocator_node()) , _comp(key_compare()){
+        template <class InputIt>
+        map(InputIt first, InputIt last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()) : _alloc(alloc), _alloc_node(allocator_node()), _comp(comp), _size(0)
+        {
+            _root = NULL;
+            insert(first, last);
+        };
+        map(const value_type &v) : _alloc(allocator_type()), _alloc_node(allocator_node()), _comp(key_compare())
+        {
             _root = insertNode(NULL, v);
             _size = 1;
         };
 
-		map (const map& x) : _alloc(x._alloc), _alloc_node(x._alloc_node) , _comp(x._comp) , _size(0)
-		{
-			_root = NULL;
-			insert(x.begin(),x.end());
-		};
+        map(const map &x) : _alloc(x._alloc), _alloc_node(x._alloc_node), _comp(x._comp), _size(0)
+        {
+            _root = NULL;
+            insert(x.begin(), x.end());
+        };
 
         ~map()
         {
@@ -72,76 +76,81 @@ class map{
                 _delete_tree();
         };
 
-		map& operator= (const map& x)
-		{
-			if (_root)
-				_delete_tree();
-			_alloc = x._alloc;
-			_alloc_node = x._alloc_node;
-			_comp = x._comp;
-			_size = 0;
-			insert(x.begin(),x.end());
-			return *this;
-		};
-		//DEBUG
-        void    print_max()
+        map &operator=(const map &x)
+        {
+            if (_root)
+                _delete_tree();
+            _alloc = x._alloc;
+            _alloc_node = x._alloc_node;
+            _comp = x._comp;
+            _size = 0;
+            insert(x.begin(), x.end());
+            return *this;
+        };
+        // DEBUG
+        void print_max()
         {
             nodePTR temp = _root;
-            while(temp)
+            while (temp)
             {
                 temp = temp->right;
             }
         };
 
-
-		//ITERATORS
+        // ITERATORS
         iterator begin()
         {
             return iterator(min(_root));
         }
 
-		iterator end()
+        iterator end()
         {
-            return iterator(max(_root));
+            nodePTR temp = max(_root);
+            if (temp)
+                temp->p = 1;
+            return iterator(temp);
         }
 
-		const_iterator begin() const
-		{
+        const_iterator begin() const
+        {
             return const_iterator(min(_root));
-		}
-
-		const_iterator end() const
-		{
-            return const_iterator(max(_root));
         }
 
-		reverse_iterator rbegin()
+        const_iterator end() const
+        {
+            nodePTR temp = max(_root);
+            if (temp)
+                temp->p = 1;
+            return const_iterator(temp);
+        }
+
+        reverse_iterator rbegin()
         {
             return reverse_iterator(end());
         }
 
-		reverse_iterator rend()
+        reverse_iterator rend()
         {
             return reverse_iterator(begin());
         }
 
-		const_reverse_iterator rbegin() const
-		{
+        const_reverse_iterator rbegin() const
+        {
             return const_reverse_iterator(end());
-		}
+        }
 
-		const_reverse_iterator rend() const
-		{
+        const_reverse_iterator rend() const
+        {
             return const_reverse_iterator(begin());
         }
-		//Capacity
+        // Capacity
         bool empty() const
         {
             if (_size == 0)
                 return true;
             return false;
         };
-        
+
         size_type size() const
         {
             return (_size);
@@ -149,10 +158,10 @@ class map{
 
         size_type max_size() const
         {
-            return(_alloc_node.max_size());
+            return (_alloc_node.max_size());
         };
-		//Element acess
-        T& at( const Key& key )
+        // Element acess
+        T &at(const Key &key)
         {
             nodePTR temp;
             temp = _find(key);
@@ -162,7 +171,7 @@ class map{
                 throw std::out_of_range("No matching key");
         };
 
-        const T& at( const Key& key ) const
+        const T &at(const Key &key) const
         {
             nodePTR temp;
             temp = _find(key);
@@ -172,7 +181,7 @@ class map{
                 throw std::out_of_range("No matching key");
         };
 
-        T& operator[]( const Key& key )
+        T &operator[](const Key &key)
         {
             nodePTR temp;
             temp = _find(key);
@@ -181,92 +190,111 @@ class map{
             else
                 return insert(ft::make_pair(key, T())).first->second;
         };
-		//Modifiers
-        ft::pair<iterator, bool> insert( const value_type& value )
+        // Modifiers
+        ft::pair<iterator, bool> insert(const value_type &value)
         {
-			if (_find(value) != NULL)
-				return (ft::make_pair(iterator(_find(value)), false));
+            if (_find(value) != NULL)
+                return (ft::make_pair(iterator(_find(value)), false));
             _root = insertNode(_root, value);
             if (_root->parent)
                 _root->parent = NULL;
-			redaronade(_root);
-			return (ft::make_pair(iterator(_find(value)), true));
+            redaronade(_root);
+            return (ft::make_pair(iterator(_find(value)), true));
         };
 
-		template< class InputIt >
-		void insert( InputIt first, InputIt last)
-		{
-			while(first != last)
-			{
-				insert((*first));
-				first++;
-			}
-		};
-        
-		iterator insert( iterator hint, const value_type& value )
-		{
-			(void)hint;
-			insert(value);
-			return(_find(value));
-		};
-
-		size_type erase( const Key& key )
-		{
-			if (_find(key) == NULL)
-            {
-				return 0;
-            }
-            else
-			{
-				deleteNode(_find(key)->data);
-				return 1;
-			}
-		};
-
-		void erase( iterator pos )
-		{
-			deleteNode(_find(pos->first)->data);
-		};
-
-        void erase (iterator first, iterator last)
+        template <class InputIt>
+        void insert(InputIt first, InputIt last)
         {
             while (first != last)
             {
-                deleteNode(_find(first->first)->data);
+                insert((*first));
                 first++;
             }
         };
 
-		void swap( map& other )
-		{
-			map temp;
-			temp._alloc = _alloc;
+        iterator insert(iterator hint, const value_type &value)
+        {
+
+            (void)hint;
+            insert(value);
+            return (_find(value));
+        };
+
+        size_type erase(const Key &key)
+        {
+            if (_find(key) == NULL)
+            {
+                return 0;
+            }
+            else
+            {
+                deleteNode(_find(key)->data);
+                _size--;
+                return 1;
+            }
+            redaronade(_root);
+        };
+
+        void erase(iterator pos)
+        {
+            value_type t = _find(pos->first)->data;
+            erase(t.first);
+            redaronade(_root);
+        };
+
+        void erase(iterator first, iterator last)
+        {
+            size_t x = 0;
+            size_t t = ft::distance(first,last);
+            value_type tab[t];
+            value_type tempd;
+            while (first != last)
+            {
+                tab[x] = _find(first->first)->data;
+                first++;
+                x++;
+            }
+            x = 0;
+            while(x < t)
+            {
+                tempd = tab[x];
+                deleteNode(tempd);
+                x++;
+            }
+            _size = _size - t;
+            redaronade(_root);
+        };
+
+        void swap(map &other)
+        {
+            map temp;
+            temp._alloc = _alloc;
             temp._alloc_node = _alloc_node;
-           	temp._comp = _comp;  
-         	temp._root = _root;
-        	temp._size = _size;
+            temp._comp = _comp;
+            temp._root = _root;
+            temp._size = _size;
 
-			_alloc = other._alloc;
-           	_alloc_node = other._alloc_node;
-            _comp = other._comp;  
+            _alloc = other._alloc;
+            _alloc_node = other._alloc_node;
+            _comp = other._comp;
             _root = other._root;
-         	_size = other._size;
+            _size = other._size;
 
-			other._alloc = temp._alloc;
-			other._alloc_node = temp._alloc_node;
-			other._comp = temp._comp;
-			other._root = temp._root;
-			other._size = temp._size;
-		};
+            other._alloc = temp._alloc;
+            other._alloc_node = temp._alloc_node;
+            other._comp = temp._comp;
+            other._root = temp._root;
+            other._size = temp._size;
+        };
 
-		void clear()
+        void clear()
         {
             if (_root)
                 _delete_tree();
             _size = 0;
         };
-        //Lookup
-        size_type count( const Key& key ) const
+        // Lookup
+        size_type count(const Key &key) const
         {
             nodePTR temp;
             temp = _find(key);
@@ -276,7 +304,7 @@ class map{
                 return 0;
         };
 
-        iterator find( const Key& key )
+        iterator find(const Key &key)
         {
             nodePTR temp;
             temp = _find(key);
@@ -286,7 +314,7 @@ class map{
                 return end();
         };
 
-        const_iterator find( const Key& key ) const
+        const_iterator find(const Key &key) const
         {
             nodePTR temp;
             temp = _find(key);
@@ -296,7 +324,7 @@ class map{
                 return end();
         };
 
-        iterator lower_bound( const Key& key )
+        iterator lower_bound(const Key &key)
         {
             iterator temp = begin();
             while (temp != end() && temp->first < key)
@@ -306,7 +334,7 @@ class map{
             return temp;
         };
 
-        const_iterator lower_bound( const Key& key ) const
+        const_iterator lower_bound(const Key &key) const
         {
             const_iterator temp = begin();
             while (temp != end() && temp->first < key)
@@ -316,7 +344,7 @@ class map{
             return temp;
         };
 
-        iterator upper_bound( const Key& key )
+        iterator upper_bound(const Key &key)
         {
             iterator temp = begin();
             while ((temp != end()) && (temp->first <= key))
@@ -326,7 +354,7 @@ class map{
             return temp;
         };
 
-        const_iterator upper_bound( const Key& key ) const
+        const_iterator upper_bound(const Key &key) const
         {
             const_iterator temp = begin();
             while (temp != end() && temp->first <= key)
@@ -336,16 +364,16 @@ class map{
             return temp;
         };
 
-        ft::pair<iterator,iterator> equal_range( const Key& key )
+        ft::pair<iterator, iterator> equal_range(const Key &key)
         {
-            return ft::make_pair(lower_bound(key),upper_bound(key));
+            return ft::make_pair(lower_bound(key), upper_bound(key));
         };
 
-        ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
+        ft::pair<const_iterator, const_iterator> equal_range(const Key &key) const
         {
-            return ft::make_pair(lower_bound(key),upper_bound(key));
+            return ft::make_pair(lower_bound(key), upper_bound(key));
         };
-		//Observers
+        // Observers
         key_compare key_comp() const
         {
             return _comp;
@@ -354,21 +382,21 @@ class map{
         {
             return value_compare();
         };
-		//Operation
-		//Allocator
-		allocator_type get_allocator() const
-		{
-			return _alloc;
-		};
+        // Operation
+        // Allocator
+        allocator_type get_allocator() const
+        {
+            return _alloc;
+        };
 
     private:
-        allocator_type      _alloc;
-        allocator_node      _alloc_node;
-        key_compare         _comp;  
-        nodePTR            _root;
-        size_type          _size;
+        allocator_type _alloc;
+        allocator_node _alloc_node;
+        key_compare _comp;
+        nodePTR _root;
+        size_type _size;
 
-        //TREE 
+        // TREE
         int max(int a, int b)
         {
             return (a > b) ? a : b;
@@ -381,24 +409,24 @@ class map{
             return N->height;
         };
 
-        nodePTR _find(const Key& key) const
+        nodePTR _find(const Key &key) const
         {
             nodePTR temp;
             if (_root == NULL)
                 return NULL;
             temp = _root;
-            while(temp->data.first != key)
+            while (temp->data.first != key)
             {
                 if (_comp(temp->data.first, key))
                 {
-                    if(temp->right)
+                    if (temp->right)
                         temp = temp->right;
                     else
                         return NULL;
                 }
                 else
                 {
-                    if(temp->left)
+                    if (temp->left)
                         temp = temp->left;
                     else
                         return NULL;
@@ -407,31 +435,31 @@ class map{
             return temp;
         };
 
-		nodePTR _find(const value_type& v) const
+        nodePTR _find(const value_type &v) const
         {
             nodePTR temp;
             if (_root == NULL)
                 return NULL;
             temp = _root;
-            while(temp->data.first != v.first)
+            while (temp->data.first != v.first)
             {
                 if (_comp(temp->data.first, v.first))
                 {
-                    if(temp->right)
+                    if (temp->right)
                         temp = temp->right;
                     else
                         return NULL;
                 }
                 else
                 {
-                    if(temp->left)
+                    if (temp->left)
                         temp = temp->left;
                     else
                         return NULL;
                 }
             }
-			return temp;
-		};
+            return temp;
+        };
 
         void filiation(nodePTR N)
         {
@@ -440,9 +468,10 @@ class map{
             if (N->right)
                 N->right->parent = N;
             if (N->left)
-                N->left->parent = N;        
+                N->left->parent = N;
         }
-        nodePTR newNode(value_type v) {
+        nodePTR newNode(value_type v)
+        {
             nodePTR node = _alloc_node.allocate(1);
             _alloc_node.construct(node, v);
             /*node->data = v;
@@ -463,12 +492,13 @@ class map{
             x->height = max(height(x->left), height(x->right)) + 1;
             return x;
         };
-        nodePTR leftRotate(nodePTR x) {
+        nodePTR leftRotate(nodePTR x)
+        {
             nodePTR y = x->right;
             nodePTR T2 = y->left;
             y->left = x;
             x->right = T2;
-			x->parent = y;
+            x->parent = y;
             x->height = max(height(x->left), height(x->right)) + 1;
             y->height = max(height(y->left), height(y->right)) + 1;
             return y;
@@ -479,7 +509,8 @@ class map{
                 return 0;
             return height(N->left) - height(N->right);
         };
-        nodePTR nodeWithMimumValue(nodePTR node) {
+        nodePTR nodeWithMimumValue(nodePTR node)
+        {
             nodePTR current = node;
             while (current->left != NULL)
                 current = current->left;
@@ -489,10 +520,10 @@ class map{
         nodePTR insertNode(nodePTR node, value_type v)
         {
             // Find the correct postion and insert the node
-            
+
             if (node == NULL)
                 return (newNode(v));
-            if (_comp(v.first  , node->data.first))
+            if (_comp(v.first, node->data.first))
                 node->left = insertNode(node->left, v);
             else if (_comp(node->data.first, v.first))
                 node->right = insertNode(node->right, v);
@@ -519,7 +550,7 @@ class map{
                 {
                     return leftRotate(node);
                 }
-                else if (_comp(v.first , node->right->data.first))
+                else if (_comp(v.first, node->right->data.first))
                 {
                     node->right = rightRotate(node->right);
                     return leftRotate(node);
@@ -532,13 +563,12 @@ class map{
             // Find the node and delete it
             if (root == NULL)
                 return root;
-            if (_comp(v.first , root->data.first))
+            if (_comp(v.first, root->data.first))
                 root->left = _deleteNode(root->left, v);
             else if (_comp(root->data.first, v.first))
                 root->right = _deleteNode(root->right, v);
-            else 
+            else
             {
-                _size--;
                 if ((root->left == NULL) || (root->right == NULL))
                 {
                     nodePTR temp = root->left ? root->left : root->right;
@@ -560,7 +590,6 @@ class map{
                     root->right = _deleteNode(root->right, temp->data);
                 }
             }
-            
             if (root == NULL)
                 return root;
             // Update the balance factor of each node and
@@ -568,71 +597,78 @@ class map{
             root->height = 1 + max(height(root->left), height(root->right));
             filiation(root);
             int balanceFactor = getBalanceFactor(root);
-            if (balanceFactor > 1) {
+            if (balanceFactor > 1)
+            {
                 if (getBalanceFactor(root->left) >= 0)
                 {
-                return rightRotate(root);
+                    return rightRotate(root);
                 }
                 else
                 {
-                root->left = leftRotate(root->left);
-                return rightRotate(root);
+                    root->left = leftRotate(root->left);
+                    return rightRotate(root);
                 }
             }
-            if (balanceFactor < -1) {
+            if (balanceFactor < -1)
+            {
                 if (getBalanceFactor(root->right) <= 0)
                 {
                     return leftRotate(root);
                 }
                 else
                 {
-                root->right = rightRotate(root->right);
-                return leftRotate(root);
+                    root->right = rightRotate(root->right);
+                    return leftRotate(root);
                 }
             }
             return root;
         }
-		void    _delete_tree()
+        void _delete_tree()
         {
-            while(_root)
+            while (_root)
             {
                 _root = _deleteNode(_root, min(_root)->data);
             }
         };
 
-        nodePTR    _new_node(nodePTR dad, value_type v)
+        nodePTR _new_node(nodePTR dad, value_type v)
         {
             nodePTR n_node;
             n_node = _alloc_node.allocate(1);
             n_node->parent = dad;
             n_node->data = v;
             n_node->height = 0;
+            n_node->p = 0;
             n_node->right = NULL;
             n_node->left = NULL;
             return (n_node);
         };
-        void    deleteNode(value_type v)
+        void deleteNode(value_type v)
         {
             _root = _deleteNode(_root, v);
             if (_root && _root->parent)
                 _root->parent = NULL;
         }
-		void	redaronade(nodePTR a)
-		{
-			if(a->left)
-			{
-				a->left->parent = a;
-				redaronade(a->left);
-			}
-			if(a->right)
-			{
-				a->right->parent = a;
-				redaronade(a->right);
-			}
-		}
-		nodePTR max(nodePTR x) const
+        void redaronade(nodePTR a)
         {
-            while(x && x->right)
+            if (!a)
+            {
+                return;
+            }
+            if (a->left)
+            {
+                a->left->parent = a;
+                redaronade(a->left);
+            }
+            if (a->right)
+            {
+                a->right->parent = a;
+                redaronade(a->right);
+            }
+        }
+        nodePTR max(nodePTR x) const
+        {
+            while (x && x->right)
             {
                 x = x->right;
             }
@@ -640,22 +676,21 @@ class map{
         }
         nodePTR min(nodePTR x) const
         {
-            while(x && x->left)
+            while (x && x->left)
             {
                 x = x->left;
             }
             return (x);
         }
-
     };
 
-    template< class Key, class T, class Compare, class Alloc >
-    bool operator==( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    template <class Key, class T, class Compare, class Alloc>
+    bool operator==(const ft::map<Key, T, Compare, Alloc> &lhs, const ft::map<Key, T, Compare, Alloc> &rhs)
     {
         if (lhs.size() != rhs.size())
             return false;
-        typename ft::map<Key,T,Compare,Alloc>::const_iterator lhsit = lhs.begin();
-        typename ft::map<Key,T,Compare,Alloc>::const_iterator rhsit = rhs.begin();
+        typename ft::map<Key, T, Compare, Alloc>::const_iterator lhsit = lhs.begin();
+        typename ft::map<Key, T, Compare, Alloc>::const_iterator rhsit = rhs.begin();
         while (lhsit != lhs.end())
         {
             if (*lhsit != *rhsit)
@@ -666,39 +701,39 @@ class map{
         return true;
     };
 
-    template< class Key, class T, class Compare, class Alloc >
-    bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    template <class Key, class T, class Compare, class Alloc>
+    bool operator!=(const ft::map<Key, T, Compare, Alloc> &lhs, const ft::map<Key, T, Compare, Alloc> &rhs)
     {
-        return(!(lhs == rhs));
+        return (!(lhs == rhs));
     };
 
-    template< class Key, class T, class Compare, class Alloc >
-    bool operator<( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    template <class Key, class T, class Compare, class Alloc>
+    bool operator<(const ft::map<Key, T, Compare, Alloc> &lhs, const ft::map<Key, T, Compare, Alloc> &rhs)
     {
         return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
     };
 
-    template< class Key, class T, class Compare, class Alloc >
-    bool operator<=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    template <class Key, class T, class Compare, class Alloc>
+    bool operator<=(const ft::map<Key, T, Compare, Alloc> &lhs, const ft::map<Key, T, Compare, Alloc> &rhs)
     {
         return (!(rhs < lhs));
     };
 
-    template< class Key, class T, class Compare, class Alloc >
-    bool operator>( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+    template <class Key, class T, class Compare, class Alloc>
+    bool operator>(const ft::map<Key, T, Compare, Alloc> &lhs, const ft::map<Key, T, Compare, Alloc> &rhs)
     {
         return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
     };
 
-    template< class Key, class T, class Compare, class Alloc >
-    bool operator>=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
-   {
+    template <class Key, class T, class Compare, class Alloc>
+    bool operator>=(const ft::map<Key, T, Compare, Alloc> &lhs, const ft::map<Key, T, Compare, Alloc> &rhs)
+    {
         return (!(lhs < rhs));
     };
 
-	template< class Key, class T, class Compare, class Alloc >
-	void swap( ft::map<Key,T,Compare,Alloc>& x, ft::map<Key,T,Compare,Alloc>& y )
-	{
+    template <class Key, class T, class Compare, class Alloc>
+    void swap(ft::map<Key, T, Compare, Alloc> &x, ft::map<Key, T, Compare, Alloc> &y)
+    {
         x.swap(y);
     };
 }

@@ -12,6 +12,7 @@ class Node {
     Node    *left;
     Node    *right;
     int height;
+	int p;
 	Node() {};
 	Node(const T& value) : data(value), parent(NULL), left(NULL) ,right(NULL), height(1)
 	{
