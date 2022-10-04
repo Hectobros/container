@@ -14,7 +14,7 @@ class map{
     public:
         typedef Key                                         key_type;
         typedef T                                           mapped_type;
-        typedef ft::pair<key_type, mapped_type>             value_type;
+        typedef ft::pair<const key_type, mapped_type>             value_type;
         typedef Compare                                     key_compare;
         typedef Alloc                                       allocator_type;
         typedef typename allocator_type::reference          reference;
@@ -205,6 +205,13 @@ class map{
 			}
 		};
         
+		iterator insert( iterator hint, const value_type& value )
+		{
+			(void)hint;
+			insert(value);
+			return(_find(value));
+		};
+
 		size_type erase( const Key& key )
 		{
 			if (_find(key) == NULL)
@@ -239,7 +246,7 @@ class map{
             temp._alloc_node = _alloc_node;
            	temp._comp = _comp;  
          	temp._root = _root;
-        	temp.size = _size;
+        	temp._size = _size;
 
 			_alloc = other._alloc;
            	_alloc_node = other._alloc_node;
