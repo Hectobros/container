@@ -6,6 +6,7 @@
 #include "./iteratormap.hpp"
 #include "./node.hpp"
 #include "./utils/reverse_iterator.hpp"
+#include "./const_iteratormap.hpp"
 namespace ft{
 
 template < class Key, class T,class Compare = ft::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
@@ -38,7 +39,7 @@ class map{
             key_compare comp;
         };
         typedef typename ft::biterator<value_type>                    iterator;
-        typedef typename ft::biterator<const value_type>              const_iterator;
+        typedef typename ft::const_biterator<value_type>              const_iterator;
         typedef typename ft::reverse_iterator<iterator>				  reverse_iterator;
 		typedef typename ft::reverse_iterator<const_iterator> 		  const_reverse_iterator;
         typedef std::ptrdiff_t                              difference_type;

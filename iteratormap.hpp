@@ -48,16 +48,6 @@ namespace ft
             return *this;
         };
 
-		operator biterator<const T>()
-        {
-            return biterator<const T>((Node<const T> *>)node);
-        }
-/*
-        operator biterator<const T>() const
-        {
-            return(biterator<const T>(node));
-        }
-*/
         biterator& operator++()
         {
             if(node)
@@ -164,22 +154,13 @@ namespace ft
 			return (&(node->data));
 		};
 
-		bool	operator==(biterator &rhs) const
-		{
-            if (!node && !rhs.node)
-                return true;
-            else if (!node || !rhs.node)
-                return false;
-			return (node->data == rhs.node->data);
-		};
-		bool	operator!=(biterator &rhs) const
-		{
-			if (!node && !rhs.node)
-                return false;
-            else if (!node || !rhs.node)
-                return true;
-			return (node->data != rhs.node->data);
-		};
+		bool		operator== (const biterator & rhs) const {
+			return node == rhs.node;
+		}
+		bool		operator!= (const biterator & rhs) const {
+			return node != rhs.node;
+		}
+
 /// débug
 		void	presentezvous(T *n) const
 		{
@@ -215,31 +196,12 @@ namespace ft
         {
             if (node)
                 std::cout << "Rank : " << node->data.first << std::endl;
-        };/*
-        bool operator==( const biterator &rhs )
-        {
-            return (data == *rhs);
         };
-        bool operator!=( const biterator &rhs)
-        {
-            return (!(*this == rhs));
-        };*/
-		private:
+		protected:
             Node<T> * node;
             Node<T> * nplus;
             Node<T> * nmoins;
     };
-/*
-    template <class Iter1, class Iter2>
-    bool operator==(ft::biterator<Iter1> const &lhs, ft::biterator<Iter2> const &rhs )
-    {
-        return (*lhs == *rhs);
-    };
-    template <class Iter1, class Iter2>
-    bool operator!=(ft::biterator<Iter1> const &lhs, ft::biterator<Iter2> const &rhs )
-    {
-        return (!(lhs == rhs));
-    };*/
 };
 
 
