@@ -1,8 +1,8 @@
 #ifndef CONST_BITERATORMAP_HPP
 #define CONST_BITERATORMAP_HPP
 #include "node.hpp"
-#include "./utils/iterator_traits.hpp"
-#include "./utils/complements.hpp"
+#include "../utils/iterator_traits.hpp"
+#include "../utils/complements.hpp"
 #include "iteratormap.hpp"
 
 
