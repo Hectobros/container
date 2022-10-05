@@ -193,8 +193,10 @@ namespace ft
         // Modifiers
         ft::pair<iterator, bool> insert(const value_type &value)
         {
-            if (_find(value) != NULL)
-                return (ft::make_pair(iterator(_find(value)), false));
+            nodePTR temp;
+            temp = _find(value);
+            if ( temp != NULL)
+                return (ft::make_pair(iterator(temp), false));
             _root = insertNode(_root, value);
             if (_root->parent)
                 _root->parent = NULL;
@@ -210,6 +212,7 @@ namespace ft
                 insert((*first));
                 first++;
             }
+            redaronade(_root);
         };
 
         iterator insert(iterator hint, const value_type &value)
@@ -230,9 +233,9 @@ namespace ft
             {
                 deleteNode(_find(key)->data);
                 _size--;
+                redaronade(_root);
                 return 1;
             }
-            redaronade(_root);
         };
 
         void erase(iterator pos)
@@ -267,12 +270,17 @@ namespace ft
 
         void swap(map &other)
         {
-            map temp;
-            temp._alloc = _alloc;
-            temp._alloc_node = _alloc_node;
-            temp._comp = _comp;
-            temp._root = _root;
-            temp._size = _size;
+            nodePTR nroot;
+            allocator_type nalloc;
+            allocator_node nnode;
+            size_t         size;
+            key_compare    ncomp;
+            
+            nalloc = _alloc;
+            nnode = _alloc_node;
+            ncomp = _comp;
+            nroot = _root;
+            size = _size;
 
             _alloc = other._alloc;
             _alloc_node = other._alloc_node;
@@ -280,11 +288,11 @@ namespace ft
             _root = other._root;
             _size = other._size;
 
-            other._alloc = temp._alloc;
-            other._alloc_node = temp._alloc_node;
-            other._comp = temp._comp;
-            other._root = temp._root;
-            other._size = temp._size;
+            other._alloc = nalloc;
+            other._alloc_node = nnode;
+            other._comp = ncomp;
+            other._root = nroot;
+            other._size = size;
         };
 
         void clear()

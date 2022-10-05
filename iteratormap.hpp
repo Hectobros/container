@@ -3,9 +3,14 @@
 #include "node.hpp"
 #include "./utils/iterator_traits.hpp"
 #include "./utils/complements.hpp"
+#include "./const_iteratormap.hpp"
+
 
 namespace ft
 {
+    template <typename T>
+    class const_biterator;
+
     template <typename T>
     class biterator
     {
@@ -34,10 +39,14 @@ namespace ft
         };
         //biterator( const_node_type * n, const_node_type * np,const_node_type * nm) : node(n), nplus(np), nmoins(nm) {};
         biterator() : node(NULL){};
-		~biterator() 
+		virtual ~biterator() 
 		{
 		};
-         biterator(const biterator &rhs)
+        biterator(const biterator &rhs)
+        {
+            *this = rhs;
+        };
+        biterator(const const_biterator<T> &rhs)
         {
             *this = rhs;
         };
@@ -49,7 +58,6 @@ namespace ft
             nmoins = rhs.nmoins;
             return *this;
         };
-
         biterator& operator++()
         {
             //presentezvous(node);
@@ -147,13 +155,13 @@ namespace ft
 			return temp;
 		};
 
-		reference	operator*()
+		reference	operator*() const
 		{
             
 			return node->data;
 		};
 
-		pointer		operator->()
+		pointer		operator->() const
 		{
 			return (&(node->data));
 		};
