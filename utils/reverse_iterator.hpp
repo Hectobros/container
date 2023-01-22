@@ -1,10 +1,7 @@
 #ifndef REVERSE_ITERATOR_HPP
 #define REVERSE_ITERATOR_HPP
 #include "iterator_traits.hpp"
-#include "../vector_utils/iterator_vector.hpp"
-#include "../map_utils/iteratormap.hpp"
 #include <iostream>
-
 
 namespace ft{
 template < typename T >
@@ -21,7 +18,7 @@ class reverse_iterator
 
         //constructors
         reverse_iterator(iterator_type iter) : current(iter){};
-        reverse_iterator() {};
+        reverse_iterator(): current(NULL){};
 
         template< class U >
         reverse_iterator( const reverse_iterator<U>& other ) : current(other.base()){};
@@ -31,11 +28,6 @@ class reverse_iterator
             return(reverse_iterator<random_acces_iterator<const value_type> >(current));
         }
 
-		operator ft::reverse_iterator<const T> () {
-			ft::biterator<const value_type> temp;
-			temp.current = current;
-			return(temp);
-		}
         template< class U >
         reverse_iterator& operator=( const reverse_iterator<U>& other )
         {
@@ -50,10 +42,7 @@ class reverse_iterator
         ///Accessor
         reference operator *() const
         {
-			iterator_type temp;
-			temp = current;
-            temp--;
-            return (*temp);
+            return *(base() - 1);
         };
         pointer operator->() const {
             return &(operator*());
