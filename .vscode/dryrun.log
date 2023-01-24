@@ -1,7 +1,0 @@
-make --dry-run --keep-going --print-directory
-make: Entering directory '/mnt/nfs/homes/nschmitt/Desktop/OO'
- 
-c++ -std=c++98 -Wall -Werror -Wextra -c main.cpp -o main.o
-c++ -std=c++98 -Wall -Werror -Wextra -o container main.o
-make: Leaving directory '/mnt/nfs/homes/nschmitt/Desktop/OO'
- 
