@@ -1,9 +1,9 @@
 # container
  
 Projet de l'école 𝟰２.
-Le but de cet exercice est de recréer certain containers de la STL avec comme contrainte l'utilisation du C++ 98.
+Le but de cet exercice est de recréer certains containers de la STL avec comme contrainte l'utilisation du C++ 98.
 
-Containers recréer:
+Containers recréés:
 -Stack
 -Vector
 -Map (avec un arbre AVL)
